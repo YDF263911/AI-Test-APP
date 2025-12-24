@@ -1,0 +1,251 @@
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:processDebugNavigationResources UP-TO-DATE
+> Task :app:compileDebugNavigationResources UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+
+> Task :app:compileDebugJavaWithJavac FAILED
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\WrongQuestionDao.java:277: ´íÎó: The columns returned by the query does not have the fields [metric,count] in com.example.aitestbank.database.dao.WrongQuestionDao.WrongQuestionStats even though they are annotated as non-null or primitive. Columns returned by the query: [is_mastered,COUNT(*)]
+    List<WrongQuestionStats> getWrongQuestionStatsByMastery(String userId);
+                             ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\WrongQuestionDao.java:277: ´íÎó: Not sure how to convert a Cursor to this method's return type (com.example.aitestbank.database.dao.WrongQuestionDao.WrongQuestionStats).
+    List<WrongQuestionStats> getWrongQuestionStatsByMastery(String userId);
+                             ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\WrongQuestionDao.java:283: ´íÎó: The columns returned by the query does not have the fields [metric,count] in com.example.aitestbank.database.dao.WrongQuestionDao.WrongQuestionStats even though they are annotated as non-null or primitive. Columns returned by the query: [wrong_count,COUNT(*)]
+    List<WrongQuestionStats> getWrongQuestionStatsByWrongCount(String userId);
+                             ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\WrongQuestionDao.java:283: ´íÎó: Not sure how to convert a Cursor to this method's return type (com.example.aitestbank.database.dao.WrongQuestionDao.WrongQuestionStats).
+    List<WrongQuestionStats> getWrongQuestionStatsByWrongCount(String userId);
+                             ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:277: ´íÎó: The columns returned by the query does not have the fields [count] in com.example.aitestbank.database.dao.UserDao.UserStats even though they are annotated as non-null or primitive. Columns returned by the query: [target_exam,COUNT(*)]
+    List<UserStats> getUserStatsByTargetExam();
+                    ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:277: ´íÎó: Not sure how to convert a Cursor to this method's return type (com.example.aitestbank.database.dao.UserDao.UserStats).
+    List<UserStats> getUserStatsByTargetExam();
+                    ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:283: ´íÎó: The columns returned by the query does not have the fields [count] in com.example.aitestbank.database.dao.UserDao.UserStats even though they are annotated as non-null or primitive. Columns returned by the query: [school,COUNT(*)]
+    List<UserStats> getUserStatsBySchool(int limit);
+                    ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:283: ´íÎó: Not sure how to convert a Cursor to this method's return type (com.example.aitestbank.database.dao.UserDao.UserStats).
+    List<UserStats> getUserStatsBySchool(int limit);
+                    ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:289: ´íÎó: The columns returned by the query does not have the fields [count] in com.example.aitestbank.database.dao.UserDao.UserStats even though they are annotated as non-null or primitive. Columns returned by the query: [major,COUNT(*)]
+    List<UserStats> getUserStatsByMajor(int limit);
+                    ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:289: ´íÎó: Not sure how to convert a Cursor to this method's return type (com.example.aitestbank.database.dao.UserDao.UserStats).
+    List<UserStats> getUserStatsByMajor(int limit);
+                    ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:295: ´íÎó: The columns returned by the query does not have the fields [count] in com.example.aitestbank.database.dao.UserDao.UserStats even though they are annotated as non-null or primitive. Columns returned by the query: [education,COUNT(*)]
+    List<UserStats> getUserStatsByEducation();
+                    ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:295: ´íÎó: Not sure how to convert a Cursor to this method's return type (com.example.aitestbank.database.dao.UserDao.UserStats).
+    List<UserStats> getUserStatsByEducation();
+                    ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:301: ´íÎó: The columns returned by the query does not have the fields [count] in com.example.aitestbank.database.dao.UserDao.UserStats even though they are annotated as non-null or primitive. Columns returned by the query: [gender,COUNT(*)]
+    List<UserStats> getUserStatsByGender();
+                    ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:301: ´íÎó: Not sure how to convert a Cursor to this method's return type (com.example.aitestbank.database.dao.UserDao.UserStats).
+    List<UserStats> getUserStatsByGender();
+                    ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\WrongQuestionDao.java:277: ¾¯¸æ: The query returns some columns [is_mastered, COUNT(*)] which are not used by com.example.aitestbank.database.dao.WrongQuestionDao.WrongQuestionStats. You can use @ColumnInfo annotation on the fields to specify the mapping. You can annotate the method with @RewriteQueriesToDropUnusedColumns to direct Room to rewrite your query to avoid fetching unused columns. com.example.aitestbank.database.dao.WrongQuestionDao.WrongQuestionStats has some fields [metric, count] which are not returned by the query. If they are not supposed to be read from the result, you can mark them with @Ignore annotation. You can suppress this warning by annotating the method with @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH). Columns returned by the query: is_mastered, COUNT(*).
+    List<WrongQuestionStats> getWrongQuestionStatsByMastery(String userId);
+                             ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\WrongQuestionDao.java:283: ¾¯¸æ: The query returns some columns [wrong_count, COUNT(*)] which are not used by com.example.aitestbank.database.dao.WrongQuestionDao.WrongQuestionStats. You can use @ColumnInfo annotation on the fields to specify the mapping. You can annotate the method with @RewriteQueriesToDropUnusedColumns to direct Room to rewrite your query to avoid fetching unused columns. com.example.aitestbank.database.dao.WrongQuestionDao.WrongQuestionStats has some fields [metric, count] which are not returned by the query. If they are not supposed to be read from the result, you can mark them with @Ignore annotation. You can suppress this warning by annotating the method with @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH). Columns returned by the query: wrong_count, COUNT(*).
+    List<WrongQuestionStats> getWrongQuestionStatsByWrongCount(String userId);
+                             ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:277: ¾¯¸æ: The query returns some columns [target_exam, COUNT(*)] which are not used by com.example.aitestbank.database.dao.UserDao.UserStats. You can use @ColumnInfo annotation on the fields to specify the mapping. You can annotate the method with @RewriteQueriesToDropUnusedColumns to direct Room to rewrite your query to avoid fetching unused columns. com.example.aitestbank.database.dao.UserDao.UserStats has some fields [category, count] which are not returned by the query. If they are not supposed to be read from the result, you can mark them with @Ignore annotation. You can suppress this warning by annotating the method with @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH). Columns returned by the query: target_exam, COUNT(*).
+    List<UserStats> getUserStatsByTargetExam();
+                    ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:283: ¾¯¸æ: The query returns some columns [school, COUNT(*)] which are not used by com.example.aitestbank.database.dao.UserDao.UserStats. You can use @ColumnInfo annotation on the fields to specify the mapping. You can annotate the method with @RewriteQueriesToDropUnusedColumns to direct Room to rewrite your query to avoid fetching unused columns. com.example.aitestbank.database.dao.UserDao.UserStats has some fields [category, count] which are not returned by the query. If they are not supposed to be read from the result, you can mark them with @Ignore annotation. You can suppress this warning by annotating the method with @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH). Columns returned by the query: school, COUNT(*).
+    List<UserStats> getUserStatsBySchool(int limit);
+                    ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:289: ¾¯¸æ: The query returns some columns [major, COUNT(*)] which are not used by com.example.aitestbank.database.dao.UserDao.UserStats. You can use @ColumnInfo annotation on the fields to specify the mapping. You can annotate the method with @RewriteQueriesToDropUnusedColumns to direct Room to rewrite your query to avoid fetching unused columns. com.example.aitestbank.database.dao.UserDao.UserStats has some fields [category, count] which are not returned by the query. If they are not supposed to be read from the result, you can mark them with @Ignore annotation. You can suppress this warning by annotating the method with @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH). Columns returned by the query: major, COUNT(*).
+    List<UserStats> getUserStatsByMajor(int limit);
+                    ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:295: ¾¯¸æ: The query returns some columns [education, COUNT(*)] which are not used by com.example.aitestbank.database.dao.UserDao.UserStats. You can use @ColumnInfo annotation on the fields to specify the mapping. You can annotate the method with @RewriteQueriesToDropUnusedColumns to direct Room to rewrite your query to avoid fetching unused columns. com.example.aitestbank.database.dao.UserDao.UserStats has some fields [category, count] which are not returned by the query. If they are not supposed to be read from the result, you can mark them with @Ignore annotation. You can suppress this warning by annotating the method with @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH). Columns returned by the query: education, COUNT(*).
+    List<UserStats> getUserStatsByEducation();
+                    ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:301: ¾¯¸æ: The query returns some columns [gender, COUNT(*)] which are not used by com.example.aitestbank.database.dao.UserDao.UserStats. You can use @ColumnInfo annotation on the fields to specify the mapping. You can annotate the method with @RewriteQueriesToDropUnusedColumns to direct Room to rewrite your query to avoid fetching unused columns. com.example.aitestbank.database.dao.UserDao.UserStats has some fields [category, count] which are not returned by the query. If they are not supposed to be read from the result, you can mark them with @Ignore annotation. You can suppress this warning by annotating the method with @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH). Columns returned by the query: gender, COUNT(*).
+    List<UserStats> getUserStatsByGender();
+                    ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:5: ´íÎó: ³ÌÐò°ücom.example.aitestbank.supabase.entity²»´æÔÚ
+import com.example.aitestbank.supabase.entity.SupabaseQuestion;
+                                             ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:6: ´íÎó: ³ÌÐò°ücom.example.aitestbank.supabase.entity²»´æÔÚ
+import com.example.aitestbank.supabase.entity.SupabaseUser;
+                                             ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:7: ´íÎó: ³ÌÐò°ücom.example.aitestbank.supabase.entity²»´æÔÚ
+import com.example.aitestbank.supabase.entity.SupabaseWrongQuestion;
+                                             ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:8: ´íÎó: ³ÌÐò°ücom.example.aitestbank.supabase.repository²»´æÔÚ
+import com.example.aitestbank.supabase.repository.SupabaseQuestionRepository;
+                                                 ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:9: ´íÎó: ³ÌÐò°ücom.example.aitestbank.supabase.repository²»´æÔÚ
+import com.example.aitestbank.supabase.repository.SupabaseUserRepository;
+                                                 ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:10: ´íÎó: ³ÌÐò°ücom.example.aitestbank.supabase.repository²»´æÔÚ
+import com.example.aitestbank.supabase.repository.SupabaseWrongQuestionRepository;
+                                                 ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:27: ´íÎó: ÕÒ²»µ½·ûºÅ
+    private SupabaseQuestionRepository supabaseQuestionRepo;
+            ^
+  ·ûºÅ:   Àà SupabaseQuestionRepository
+  Î»ÖÃ: Àà DataMigrationHelper
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:28: ´íÎó: ÕÒ²»µ½·ûºÅ
+    private SupabaseUserRepository supabaseUserRepo;
+            ^
+  ·ûºÅ:   Àà SupabaseUserRepository
+  Î»ÖÃ: Àà DataMigrationHelper
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:29: ´íÎó: ÕÒ²»µ½·ûºÅ
+    private SupabaseWrongQuestionRepository supabaseWrongQuestionRepo;
+            ^
+  ·ûºÅ:   Àà SupabaseWrongQuestionRepository
+  Î»ÖÃ: Àà DataMigrationHelper
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:237: ´íÎó: ÕÒ²»µ½·ûºÅ
+    private SupabaseQuestion convertToSupabaseQuestion(Question roomQuestion) {
+            ^
+  ·ûºÅ:   Àà SupabaseQuestion
+  Î»ÖÃ: Àà DataMigrationHelper
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:282: ´íÎó: ÕÒ²»µ½·ûºÅ
+    private SupabaseWrongQuestion convertToSupabaseWrongQuestion(WrongQuestion roomWrongQuestion) {
+            ^
+  ·ûºÅ:   Àà SupabaseWrongQuestion
+  Î»ÖÃ: Àà DataMigrationHelper
+25 ¸ö´íÎó
+7 ¸ö¾¯¸æ
+
+[Incubating] Problems report is available at: file:///C:/Users/19409/AndroidStudioProjects/AITestBank/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileDebugJavaWithJavac'.
+> Compilation failed; see the compiler output below.
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\WrongQuestionDao.java:277: ´íÎó: The columns returned by the query does not have the fields [metric,count] in com.example.aitestbank.database.dao.WrongQuestionDao.WrongQuestionStats even though they are annotated as non-null or primitive. Columns returned by the query: [is_mastered,COUNT(*)]
+      List<WrongQuestionStats> getWrongQuestionStatsByMastery(String userId);
+                               ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\WrongQuestionDao.java:277: ´íÎó: Not sure how to convert a Cursor to this method's return type (com.example.aitestbank.database.dao.WrongQuestionDao.WrongQuestionStats).
+      List<WrongQuestionStats> getWrongQuestionStatsByMastery(String userId);
+                               ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\WrongQuestionDao.java:283: ´íÎó: The columns returned by the query does not have the fields [metric,count] in com.example.aitestbank.database.dao.WrongQuestionDao.WrongQuestionStats even though they are annotated as non-null or primitive. Columns returned by the query: [wrong_count,COUNT(*)]
+      List<WrongQuestionStats> getWrongQuestionStatsByWrongCount(String userId);
+                               ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\WrongQuestionDao.java:283: ´íÎó: Not sure how to convert a Cursor to this method's return type (com.example.aitestbank.database.dao.WrongQuestionDao.WrongQuestionStats).
+      List<WrongQuestionStats> getWrongQuestionStatsByWrongCount(String userId);
+                               ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:277: ´íÎó: The columns returned by the query does not have the fields [count] in com.example.aitestbank.database.dao.UserDao.UserStats even though they are annotated as non-null or primitive. Columns returned by the query: [target_exam,COUNT(*)]
+      List<UserStats> getUserStatsByTargetExam();
+                      ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:277: ´íÎó: Not sure how to convert a Cursor to this method's return type (com.example.aitestbank.database.dao.UserDao.UserStats).
+      List<UserStats> getUserStatsByTargetExam();
+                      ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:283: ´íÎó: The columns returned by the query does not have the fields [count] in com.example.aitestbank.database.dao.UserDao.UserStats even though they are annotated as non-null or primitive. Columns returned by the query: [school,COUNT(*)]
+      List<UserStats> getUserStatsBySchool(int limit);
+                      ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:283: ´íÎó: Not sure how to convert a Cursor to this method's return type (com.example.aitestbank.database.dao.UserDao.UserStats).
+      List<UserStats> getUserStatsBySchool(int limit);
+                      ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:289: ´íÎó: The columns returned by the query does not have the fields [count] in com.example.aitestbank.database.dao.UserDao.UserStats even though they are annotated as non-null or primitive. Columns returned by the query: [major,COUNT(*)]
+      List<UserStats> getUserStatsByMajor(int limit);
+                      ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:289: ´íÎó: Not sure how to convert a Cursor to this method's return type (com.example.aitestbank.database.dao.UserDao.UserStats).
+      List<UserStats> getUserStatsByMajor(int limit);
+                      ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:295: ´íÎó: The columns returned by the query does not have the fields [count] in com.example.aitestbank.database.dao.UserDao.UserStats even though they are annotated as non-null or primitive. Columns returned by the query: [education,COUNT(*)]
+      List<UserStats> getUserStatsByEducation();
+                      ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:295: ´íÎó: Not sure how to convert a Cursor to this method's return type (com.example.aitestbank.database.dao.UserDao.UserStats).
+      List<UserStats> getUserStatsByEducation();
+                      ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:301: ´íÎó: The columns returned by the query does not have the fields [count] in com.example.aitestbank.database.dao.UserDao.UserStats even though they are annotated as non-null or primitive. Columns returned by the query: [gender,COUNT(*)]
+      List<UserStats> getUserStatsByGender();
+                      ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:301: ´íÎó: Not sure how to convert a Cursor to this method's return type (com.example.aitestbank.database.dao.UserDao.UserStats).
+      List<UserStats> getUserStatsByGender();
+                      ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\WrongQuestionDao.java:277: ¾¯¸æ: The query returns some columns [is_mastered, COUNT(*)] which are not used by com.example.aitestbank.database.dao.WrongQuestionDao.WrongQuestionStats. You can use @ColumnInfo annotation on the fields to specify the mapping. You can annotate the method with @RewriteQueriesToDropUnusedColumns to direct Room to rewrite your query to avoid fetching unused columns. com.example.aitestbank.database.dao.WrongQuestionDao.WrongQuestionStats has some fields [metric, count] which are not returned by the query. If they are not supposed to be read from the result, you can mark them with @Ignore annotation. You can suppress this warning by annotating the method with @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH). Columns returned by the query: is_mastered, COUNT(*).
+      List<WrongQuestionStats> getWrongQuestionStatsByMastery(String userId);
+                               ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\WrongQuestionDao.java:283: ¾¯¸æ: The query returns some columns [wrong_count, COUNT(*)] which are not used by com.example.aitestbank.database.dao.WrongQuestionDao.WrongQuestionStats. You can use @ColumnInfo annotation on the fields to specify the mapping. You can annotate the method with @RewriteQueriesToDropUnusedColumns to direct Room to rewrite your query to avoid fetching unused columns. com.example.aitestbank.database.dao.WrongQuestionDao.WrongQuestionStats has some fields [metric, count] which are not returned by the query. If they are not supposed to be read from the result, you can mark them with @Ignore annotation. You can suppress this warning by annotating the method with @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH). Columns returned by the query: wrong_count, COUNT(*).
+      List<WrongQuestionStats> getWrongQuestionStatsByWrongCount(String userId);
+                               ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:277: ¾¯¸æ: The query returns some columns [target_exam, COUNT(*)] which are not used by com.example.aitestbank.database.dao.UserDao.UserStats. You can use @ColumnInfo annotation on the fields to specify the mapping. You can annotate the method with @RewriteQueriesToDropUnusedColumns to direct Room to rewrite your query to avoid fetching unused columns. com.example.aitestbank.database.dao.UserDao.UserStats has some fields [category, count] which are not returned by the query. If they are not supposed to be read from the result, you can mark them with @Ignore annotation. You can suppress this warning by annotating the method with @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH). Columns returned by the query: target_exam, COUNT(*).
+      List<UserStats> getUserStatsByTargetExam();
+                      ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:283: ¾¯¸æ: The query returns some columns [school, COUNT(*)] which are not used by com.example.aitestbank.database.dao.UserDao.UserStats. You can use @ColumnInfo annotation on the fields to specify the mapping. You can annotate the method with @RewriteQueriesToDropUnusedColumns to direct Room to rewrite your query to avoid fetching unused columns. com.example.aitestbank.database.dao.UserDao.UserStats has some fields [category, count] which are not returned by the query. If they are not supposed to be read from the result, you can mark them with @Ignore annotation. You can suppress this warning by annotating the method with @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH). Columns returned by the query: school, COUNT(*).
+      List<UserStats> getUserStatsBySchool(int limit);
+                      ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:289: ¾¯¸æ: The query returns some columns [major, COUNT(*)] which are not used by com.example.aitestbank.database.dao.UserDao.UserStats. You can use @ColumnInfo annotation on the fields to specify the mapping. You can annotate the method with @RewriteQueriesToDropUnusedColumns to direct Room to rewrite your query to avoid fetching unused columns. com.example.aitestbank.database.dao.UserDao.UserStats has some fields [category, count] which are not returned by the query. If they are not supposed to be read from the result, you can mark them with @Ignore annotation. You can suppress this warning by annotating the method with @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH). Columns returned by the query: major, COUNT(*).
+      List<UserStats> getUserStatsByMajor(int limit);
+                      ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:295: ¾¯¸æ: The query returns some columns [education, COUNT(*)] which are not used by com.example.aitestbank.database.dao.UserDao.UserStats. You can use @ColumnInfo annotation on the fields to specify the mapping. You can annotate the method with @RewriteQueriesToDropUnusedColumns to direct Room to rewrite your query to avoid fetching unused columns. com.example.aitestbank.database.dao.UserDao.UserStats has some fields [category, count] which are not returned by the query. If they are not supposed to be read from the result, you can mark them with @Ignore annotation. You can suppress this warning by annotating the method with @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH). Columns returned by the query: education, COUNT(*).
+      List<UserStats> getUserStatsByEducation();
+                      ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\database\dao\UserDao.java:301: ¾¯¸æ: The query returns some columns [gender, COUNT(*)] which are not used by com.example.aitestbank.database.dao.UserDao.UserStats. You can use @ColumnInfo annotation on the fields to specify the mapping. You can annotate the method with @RewriteQueriesToDropUnusedColumns to direct Room to rewrite your query to avoid fetching unused columns. com.example.aitestbank.database.dao.UserDao.UserStats has some fields [category, count] which are not returned by the query. If they are not supposed to be read from the result, you can mark them with @Ignore annotation. You can suppress this warning by annotating the method with @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH). Columns returned by the query: gender, COUNT(*).
+      List<UserStats> getUserStatsByGender();
+                      ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:5: ´íÎó: ³ÌÐò°ücom.example.aitestbank.supabase.entity²»´æÔÚ
+  import com.example.aitestbank.supabase.entity.SupabaseQuestion;
+                                               ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:6: ´íÎó: ³ÌÐò°ücom.example.aitestbank.supabase.entity²»´æÔÚ
+  import com.example.aitestbank.supabase.entity.SupabaseUser;
+                                               ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:7: ´íÎó: ³ÌÐò°ücom.example.aitestbank.supabase.entity²»´æÔÚ
+  import com.example.aitestbank.supabase.entity.SupabaseWrongQuestion;
+                                               ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:8: ´íÎó: ³ÌÐò°ücom.example.aitestbank.supabase.repository²»´æÔÚ
+  import com.example.aitestbank.supabase.repository.SupabaseQuestionRepository;
+                                                   ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:9: ´íÎó: ³ÌÐò°ücom.example.aitestbank.supabase.repository²»´æÔÚ
+  import com.example.aitestbank.supabase.repository.SupabaseUserRepository;
+                                                   ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:10: ´íÎó: ³ÌÐò°ücom.example.aitestbank.supabase.repository²»´æÔÚ
+  import com.example.aitestbank.supabase.repository.SupabaseWrongQuestionRepository;
+                                                   ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:27: ´íÎó: ÕÒ²»µ½·ûºÅ
+      private SupabaseQuestionRepository supabaseQuestionRepo;
+              ^
+    ·ûºÅ:   Àà SupabaseQuestionRepository
+    Î»ÖÃ: Àà DataMigrationHelper
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:28: ´íÎó: ÕÒ²»µ½·ûºÅ
+      private SupabaseUserRepository supabaseUserRepo;
+              ^
+    ·ûºÅ:   Àà SupabaseUserRepository
+    Î»ÖÃ: Àà DataMigrationHelper
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:29: ´íÎó: ÕÒ²»µ½·ûºÅ
+      private SupabaseWrongQuestionRepository supabaseWrongQuestionRepo;
+              ^
+    ·ûºÅ:   Àà SupabaseWrongQuestionRepository
+    Î»ÖÃ: Àà DataMigrationHelper
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:237: ´íÎó: ÕÒ²»µ½·ûºÅ
+      private SupabaseQuestion convertToSupabaseQuestion(Question roomQuestion) {
+              ^
+    ·ûºÅ:   Àà SupabaseQuestion
+    Î»ÖÃ: Àà DataMigrationHelper
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:282: ´íÎó: ÕÒ²»µ½·ûºÅ
+      private SupabaseWrongQuestion convertToSupabaseWrongQuestion(WrongQuestion roomWrongQuestion) {
+              ^
+    ·ûºÅ:   Àà SupabaseWrongQuestion
+    Î»ÖÃ: Àà DataMigrationHelper
+  25 ¸ö´íÎó
+  7 ¸ö¾¯¸æ
+
+* Try:
+> Check your code and dependencies to fix the compilation error(s)
+> Run with --scan to get full insights.
+
+BUILD FAILED in 3s
+17 actionable tasks: 1 executed, 16 up-to-date

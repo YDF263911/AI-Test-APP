@@ -1,0 +1,381 @@
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:processDebugNavigationResources UP-TO-DATE
+> Task :app:compileDebugNavigationResources UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+
+> Task :app:compileDebugJavaWithJavac
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:87: 错误: 找不到符号
+                SupabaseUser supabaseUser = supabaseUserRepo.getCurrentUser();
+                ^
+  符号:   类 SupabaseUser
+  位置: 类 DataMigrationHelper
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:87: 错误: 找不到符号
+                SupabaseUser supabaseUser = supabaseUserRepo.getCurrentUser();
+                                            ^
+  符号:   变量 supabaseUserRepo
+  位置: 类 DataMigrationHelper
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:91: 错误: 找不到符号
+                    supabaseUser = new SupabaseUser();
+                                       ^
+  符号:   类 SupabaseUser
+  位置: 类 DataMigrationHelper
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:96: 错误: 找不到符号
+                    supabaseUser.setAvatarUrl(roomUser.getAvatarUrl());
+                                                      ^
+  符号:   方法 getAvatarUrl()
+  位置: 类型为User的变量 roomUser
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:100: 错误: 找不到符号
+                    supabaseUser.setStudyTarget(roomUser.getStudyTarget());
+                                                        ^
+  符号:   方法 getStudyTarget()
+  位置: 类型为User的变量 roomUser
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:101: 错误: 找不到符号
+                    supabaseUser.setStudySubject(roomUser.getStudySubject());
+                                                         ^
+  符号:   方法 getStudySubject()
+  位置: 类型为User的变量 roomUser
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:103: 错误: 找不到符号
+                    supabaseUser.setDailyGoal(roomUser.getDailyGoal());
+                                                      ^
+  符号:   方法 getDailyGoal()
+  位置: 类型为User的变量 roomUser
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:104: 错误: 找不到符号
+                    supabaseUser.setTotalQuestions(roomUser.getTotalQuestions());
+                                                           ^
+  符号:   方法 getTotalQuestions()
+  位置: 类型为User的变量 roomUser
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:105: 错误: 找不到符号
+                    supabaseUser.setCorrectQuestions(roomUser.getCorrectQuestions());
+                                                             ^
+  符号:   方法 getCorrectQuestions()
+  位置: 类型为User的变量 roomUser
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:106: 错误: 找不到符号
+                    supabaseUser.setStudyDays(roomUser.getStudyDays());
+                                                      ^
+  符号:   方法 getStudyDays()
+  位置: 类型为User的变量 roomUser
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:107: 错误: 找不到符号
+                    supabaseUser.setLastStudyDate(roomUser.getLastStudyDate());
+                                                          ^
+  符号:   方法 getLastStudyDate()
+  位置: 类型为User的变量 roomUser
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:108: 错误: 找不到符号
+                    supabaseUser.setStudyStreak(roomUser.getStudyStreak());
+                                                        ^
+  符号:   方法 getStudyStreak()
+  位置: 类型为User的变量 roomUser
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:109: 错误: 找不到符号
+                    supabaseUser.setIsPremium(roomUser.getIsPremium());
+                                                      ^
+  符号:   方法 getIsPremium()
+  位置: 类型为User的变量 roomUser
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:110: 错误: 找不到符号
+                    supabaseUser.setPremiumExpiredAt(roomUser.getPremiumExpiredAt());
+                                                             ^
+  符号:   方法 getPremiumExpiredAt()
+  位置: 类型为User的变量 roomUser
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:113: 错误: 找不到符号
+                    supabaseUserRepo.updateUser(supabaseUser);
+                    ^
+  符号:   变量 supabaseUserRepo
+  位置: 类 DataMigrationHelper
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:149: 错误: 找不到符号
+                    SupabaseQuestion supabaseQuestion = convertToSupabaseQuestion(roomQuestion);
+                    ^
+  符号:   类 SupabaseQuestion
+  位置: 类 DataMigrationHelper
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:149: 错误: 找不到符号
+                    SupabaseQuestion supabaseQuestion = convertToSupabaseQuestion(roomQuestion);
+                                                        ^
+  符号:   方法 convertToSupabaseQuestion(Question)
+  位置: 类 DataMigrationHelper
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:152: 错误: 找不到符号
+                    SupabaseQuestion existing = supabaseQuestionRepo.getQuestionById(supabaseQuestion.getId());
+                    ^
+  符号:   类 SupabaseQuestion
+  位置: 类 DataMigrationHelper
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:152: 错误: 找不到符号
+                    SupabaseQuestion existing = supabaseQuestionRepo.getQuestionById(supabaseQuestion.getId());
+                                                ^
+  符号:   变量 supabaseQuestionRepo
+  位置: 类 DataMigrationHelper
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:156: 错误: 找不到符号
+                        if (supabaseQuestionRepo.createQuestion(supabaseQuestion)) {
+                            ^
+  符号:   变量 supabaseQuestionRepo
+  位置: 类 DataMigrationHelper
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:189: 错误: 找不到符号
+            List<WrongQuestion> roomWrongQuestions = roomDatabase.wrongQuestionDao().getAllWrongQuestions();
+                                                                                    ^
+  符号:   方法 getAllWrongQuestions()
+  位置: 接口 WrongQuestionDao
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:199: 错误: 找不到符号
+                    SupabaseWrongQuestion supabaseWrongQuestion = convertToSupabaseWrongQuestion(roomWrongQuestion);
+                    ^
+  符号:   类 SupabaseWrongQuestion
+  位置: 类 DataMigrationHelper
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:199: 错误: 找不到符号
+                    SupabaseWrongQuestion supabaseWrongQuestion = convertToSupabaseWrongQuestion(roomWrongQuestion);
+                                                                  ^
+  符号:   方法 convertToSupabaseWrongQuestion(WrongQuestion)
+  位置: 类 DataMigrationHelper
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:202: 错误: 找不到符号
+                    SupabaseWrongQuestion existing = supabaseWrongQuestionRepo.getWrongQuestionById(supabaseWrongQuestion.getId());
+                    ^
+  符号:   类 SupabaseWrongQuestion
+  位置: 类 DataMigrationHelper
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:202: 错误: 找不到符号
+                    SupabaseWrongQuestion existing = supabaseWrongQuestionRepo.getWrongQuestionById(supabaseWrongQuestion.getId());
+                                                     ^
+  符号:   变量 supabaseWrongQuestionRepo
+  位置: 类 DataMigrationHelper
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:206: 错误: 找不到符号
+                        if (supabaseWrongQuestionRepo.getWrongQuestionById(supabaseWrongQuestion.getId()) == null) {
+                            ^
+  符号:   变量 supabaseWrongQuestionRepo
+  位置: 类 DataMigrationHelper
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:218: 错误: 找不到符号
+                    Log.e(TAG, "单个错题迁移失败: " + roomWrongQuestion.getQuestionTitle(), e);
+                                                               ^
+  符号:   方法 getQuestionTitle()
+  位置: 类型为WrongQuestion的变量 roomWrongQuestion
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:340: 错误: 找不到符号
+            List<SupabaseQuestion> supabaseQuestions = supabaseQuestionRepo.getQuestions(1000, 0, null, null, null);
+                 ^
+  符号:   类 SupabaseQuestion
+  位置: 类 DataMigrationHelper
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:340: 错误: 找不到符号
+            List<SupabaseQuestion> supabaseQuestions = supabaseQuestionRepo.getQuestions(1000, 0, null, null, null);
+                                                       ^
+  符号:   变量 supabaseQuestionRepo
+  位置: 类 DataMigrationHelper
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:346: 错误: 无法将接口 WrongQuestionDao中的方法 getWrongQuestionCount应用到给定类型;
+            int roomWrongQuestionCount = roomDatabase.wrongQuestionDao().getWrongQuestionCount();
+                                                                        ^
+  需要: String
+  找到:    没有参数
+  原因: 实际参数列表和形式参数列表长度不同
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:347: 错误: 找不到符号
+            List<SupabaseWrongQuestion> supabaseWrongQuestions = supabaseWrongQuestionRepo.getWrongQuestions(1000, 0, null, null, null);
+                 ^
+  符号:   类 SupabaseWrongQuestion
+  位置: 类 DataMigrationHelper
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:347: 错误: 找不到符号
+            List<SupabaseWrongQuestion> supabaseWrongQuestions = supabaseWrongQuestionRepo.getWrongQuestions(1000, 0, null, null, null);
+                                                                 ^
+  符号:   变量 supabaseWrongQuestionRepo
+  位置: 类 DataMigrationHelper
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\SimpleSupabaseClient.java:34: 错误: 程序包HttpLoggingInterceptor不存在
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                                                                                            ^
+C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\SimpleSupabaseClient.java:34: 错误: 找不到符号
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                                    ^
+  符号:   类 HttpLoggingInterceptor
+  位置: 类 SimpleSupabaseClient
+注: C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\utils\NetworkUtils.java使用或覆盖了已过时的 API。
+注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
+34 个错误
+
+> Task :app:compileDebugJavaWithJavac FAILED
+
+[Incubating] Problems report is available at: file:///C:/Users/19409/AndroidStudioProjects/AITestBank/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileDebugJavaWithJavac'.
+> Compilation failed; see the compiler output below.
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:87: 错误: 找不到符号
+                  SupabaseUser supabaseUser = supabaseUserRepo.getCurrentUser();
+                  ^
+    符号:   类 SupabaseUser
+    位置: 类 DataMigrationHelper
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:87: 错误: 找不到符号
+                  SupabaseUser supabaseUser = supabaseUserRepo.getCurrentUser();
+                                              ^
+    符号:   变量 supabaseUserRepo
+    位置: 类 DataMigrationHelper
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:91: 错误: 找不到符号
+                      supabaseUser = new SupabaseUser();
+                                         ^
+    符号:   类 SupabaseUser
+    位置: 类 DataMigrationHelper
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:96: 错误: 找不到符号
+                      supabaseUser.setAvatarUrl(roomUser.getAvatarUrl());
+                                                        ^
+    符号:   方法 getAvatarUrl()
+    位置: 类型为User的变量 roomUser
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:100: 错误: 找不到符号
+                      supabaseUser.setStudyTarget(roomUser.getStudyTarget());
+                                                          ^
+    符号:   方法 getStudyTarget()
+    位置: 类型为User的变量 roomUser
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:101: 错误: 找不到符号
+                      supabaseUser.setStudySubject(roomUser.getStudySubject());
+                                                           ^
+    符号:   方法 getStudySubject()
+    位置: 类型为User的变量 roomUser
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:103: 错误: 找不到符号
+                      supabaseUser.setDailyGoal(roomUser.getDailyGoal());
+                                                        ^
+    符号:   方法 getDailyGoal()
+    位置: 类型为User的变量 roomUser
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:104: 错误: 找不到符号
+                      supabaseUser.setTotalQuestions(roomUser.getTotalQuestions());
+                                                             ^
+    符号:   方法 getTotalQuestions()
+    位置: 类型为User的变量 roomUser
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:105: 错误: 找不到符号
+                      supabaseUser.setCorrectQuestions(roomUser.getCorrectQuestions());
+                                                               ^
+    符号:   方法 getCorrectQuestions()
+    位置: 类型为User的变量 roomUser
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:106: 错误: 找不到符号
+                      supabaseUser.setStudyDays(roomUser.getStudyDays());
+                                                        ^
+    符号:   方法 getStudyDays()
+    位置: 类型为User的变量 roomUser
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:107: 错误: 找不到符号
+                      supabaseUser.setLastStudyDate(roomUser.getLastStudyDate());
+                                                            ^
+    符号:   方法 getLastStudyDate()
+    位置: 类型为User的变量 roomUser
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:108: 错误: 找不到符号
+                      supabaseUser.setStudyStreak(roomUser.getStudyStreak());
+                                                          ^
+    符号:   方法 getStudyStreak()
+    位置: 类型为User的变量 roomUser
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:109: 错误: 找不到符号
+                      supabaseUser.setIsPremium(roomUser.getIsPremium());
+                                                        ^
+    符号:   方法 getIsPremium()
+    位置: 类型为User的变量 roomUser
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:110: 错误: 找不到符号
+                      supabaseUser.setPremiumExpiredAt(roomUser.getPremiumExpiredAt());
+                                                               ^
+    符号:   方法 getPremiumExpiredAt()
+    位置: 类型为User的变量 roomUser
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:113: 错误: 找不到符号
+                      supabaseUserRepo.updateUser(supabaseUser);
+                      ^
+    符号:   变量 supabaseUserRepo
+    位置: 类 DataMigrationHelper
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:149: 错误: 找不到符号
+                      SupabaseQuestion supabaseQuestion = convertToSupabaseQuestion(roomQuestion);
+                      ^
+    符号:   类 SupabaseQuestion
+    位置: 类 DataMigrationHelper
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:149: 错误: 找不到符号
+                      SupabaseQuestion supabaseQuestion = convertToSupabaseQuestion(roomQuestion);
+                                                          ^
+    符号:   方法 convertToSupabaseQuestion(Question)
+    位置: 类 DataMigrationHelper
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:152: 错误: 找不到符号
+                      SupabaseQuestion existing = supabaseQuestionRepo.getQuestionById(supabaseQuestion.getId());
+                      ^
+    符号:   类 SupabaseQuestion
+    位置: 类 DataMigrationHelper
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:152: 错误: 找不到符号
+                      SupabaseQuestion existing = supabaseQuestionRepo.getQuestionById(supabaseQuestion.getId());
+                                                  ^
+    符号:   变量 supabaseQuestionRepo
+    位置: 类 DataMigrationHelper
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:156: 错误: 找不到符号
+                          if (supabaseQuestionRepo.createQuestion(supabaseQuestion)) {
+                              ^
+    符号:   变量 supabaseQuestionRepo
+    位置: 类 DataMigrationHelper
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:189: 错误: 找不到符号
+              List<WrongQuestion> roomWrongQuestions = roomDatabase.wrongQuestionDao().getAllWrongQuestions();
+                                                                                      ^
+    符号:   方法 getAllWrongQuestions()
+    位置: 接口 WrongQuestionDao
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:199: 错误: 找不到符号
+                      SupabaseWrongQuestion supabaseWrongQuestion = convertToSupabaseWrongQuestion(roomWrongQuestion);
+                      ^
+    符号:   类 SupabaseWrongQuestion
+    位置: 类 DataMigrationHelper
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:199: 错误: 找不到符号
+                      SupabaseWrongQuestion supabaseWrongQuestion = convertToSupabaseWrongQuestion(roomWrongQuestion);
+                                                                    ^
+    符号:   方法 convertToSupabaseWrongQuestion(WrongQuestion)
+    位置: 类 DataMigrationHelper
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:202: 错误: 找不到符号
+                      SupabaseWrongQuestion existing = supabaseWrongQuestionRepo.getWrongQuestionById(supabaseWrongQuestion.getId());
+                      ^
+    符号:   类 SupabaseWrongQuestion
+    位置: 类 DataMigrationHelper
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:202: 错误: 找不到符号
+                      SupabaseWrongQuestion existing = supabaseWrongQuestionRepo.getWrongQuestionById(supabaseWrongQuestion.getId());
+                                                       ^
+    符号:   变量 supabaseWrongQuestionRepo
+    位置: 类 DataMigrationHelper
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:206: 错误: 找不到符号
+                          if (supabaseWrongQuestionRepo.getWrongQuestionById(supabaseWrongQuestion.getId()) == null) {
+                              ^
+    符号:   变量 supabaseWrongQuestionRepo
+    位置: 类 DataMigrationHelper
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:218: 错误: 找不到符号
+                      Log.e(TAG, "单个错题迁移失败: " + roomWrongQuestion.getQuestionTitle(), e);
+                                                                 ^
+    符号:   方法 getQuestionTitle()
+    位置: 类型为WrongQuestion的变量 roomWrongQuestion
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:340: 错误: 找不到符号
+              List<SupabaseQuestion> supabaseQuestions = supabaseQuestionRepo.getQuestions(1000, 0, null, null, null);
+                   ^
+    符号:   类 SupabaseQuestion
+    位置: 类 DataMigrationHelper
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:340: 错误: 找不到符号
+              List<SupabaseQuestion> supabaseQuestions = supabaseQuestionRepo.getQuestions(1000, 0, null, null, null);
+                                                         ^
+    符号:   变量 supabaseQuestionRepo
+    位置: 类 DataMigrationHelper
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:346: 错误: 无法将接口 WrongQuestionDao中的方法 getWrongQuestionCount应用到给定类型;
+              int roomWrongQuestionCount = roomDatabase.wrongQuestionDao().getWrongQuestionCount();
+                                                                          ^
+    需要: String
+    找到:    没有参数
+    原因: 实际参数列表和形式参数列表长度不同
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:347: 错误: 找不到符号
+              List<SupabaseWrongQuestion> supabaseWrongQuestions = supabaseWrongQuestionRepo.getWrongQuestions(1000, 0, null, null, null);
+                   ^
+    符号:   类 SupabaseWrongQuestion
+    位置: 类 DataMigrationHelper
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\DataMigrationHelper.java:347: 错误: 找不到符号
+              List<SupabaseWrongQuestion> supabaseWrongQuestions = supabaseWrongQuestionRepo.getWrongQuestions(1000, 0, null, null, null);
+                                                                   ^
+    符号:   变量 supabaseWrongQuestionRepo
+    位置: 类 DataMigrationHelper
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\SimpleSupabaseClient.java:34: 错误: 程序包HttpLoggingInterceptor不存在
+                  .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                                                                                              ^
+  C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\supabase\SimpleSupabaseClient.java:34: 错误: 找不到符号
+                  .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                                      ^
+    符号:   类 HttpLoggingInterceptor
+    位置: 类 SimpleSupabaseClient
+  注: C:\Users\19409\AndroidStudioProjects\AITestBank\app\src\main\java\com\example\aitestbank\utils\NetworkUtils.java使用或覆盖了已过时的 API。
+  注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
+  34 个错误
+
+* Try:
+> Check your code and dependencies to fix the compilation error(s)
+> Run with --scan to get full insights.
+
+BUILD FAILED in 4s
+17 actionable tasks: 1 executed, 16 up-to-date

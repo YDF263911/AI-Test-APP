@@ -1,0 +1,233 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme with modern Material Design -->
+    <style name="Base.Theme.AITestBank" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary Colors -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimary">@color/text_on_primary</item>
+        <item name="colorPrimaryContainer">@color/primary_light</item>
+        <item name="colorOnPrimaryContainer">@color/primary_dark</item>
+        
+        <!-- Secondary Colors -->
+        <item name="colorSecondary">@color/accent</item>
+        <item name="colorOnSecondary">@color/text_on_secondary</item>
+        <item name="colorSecondaryContainer">@color/accent_light</item>
+        <item name="colorOnSecondaryContainer">@color/primary</item>
+        
+        <!-- Background Colors -->
+        <item name="android:colorBackground">@color/bg_secondary</item>
+        <item name="colorOnBackground">@color/text_primary</item>
+        <item name="colorSurface">@color/bg_surface</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorSurfaceVariant">@color/bg_card</item>
+        <item name="colorOnSurfaceVariant">@color/text_secondary</item>
+        
+        <!-- Status Bar & Navigation Bar -->
+        <item name="android:statusBarColor">@color/status_bar</item>
+        <item name="android:navigationBarColor">@color/navigation_bar</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        
+        <!-- Card Styles -->
+        <item name="cardViewStyle">@style/ModernCardView</item>
+        
+        <!-- Button Styles -->
+        <item name="materialButtonStyle">@style/ModernButton</item>
+        <item name="borderlessButtonStyle">@style/ModernTextButton</item>
+        <item name="materialButtonOutlinedStyle">@style/ModernOutlineButton</item>
+        
+        <!-- Input Field Styles -->
+        <item name="textInputStyle">@style/ModernTextInputLayout</item>
+        
+        <!-- Typography -->
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:textColorHint">@color/text_hint</item>
+    </style>
+
+    <style name="Theme.AITestBank" parent="Base.Theme.AITestBank" />
+    
+    <!-- Modern Card Styles -->
+    <style name="ModernCardView" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">8dp</item>
+        <item name="cardBackgroundColor">@color/bg_card</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="strokeColor">@color/border</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="rippleColor">@color/primary_light</item>
+    </style>
+    
+    <!-- Compact Card Style -->
+    <style name="ModernCardView.Compact" parent="ModernCardView">
+        <item name="cardElevation">4dp</item>
+        <item name="cardCornerRadius">12dp</item>
+    </style>
+    
+    <!-- Modern Button Styles -->
+    <style name="ModernButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">@color/btn_primary_text</item>
+        <item name="backgroundTint">@color/btn_primary_bg</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:paddingStart">24dp</item>
+        <item name="android:paddingEnd">24dp</item>
+        <item name="rippleColor">@color/primary_light</item>
+        <item name="android:elevation">4dp</item>
+    </style>
+    
+    <style name="ModernButton.Small" parent="ModernButton">
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="cornerRadius">8dp</item>
+    </style>
+    
+    <style name="ModernButton.Secondary" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/btn_secondary_text</item>
+        <item name="backgroundTint">@color/btn_secondary_bg</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:paddingStart">24dp</item>
+        <item name="android:paddingEnd">24dp</item>
+        <item name="rippleColor">@color/primary_light</item>
+    </style>
+    
+    <style name="ModernOutlineButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/btn_outline_text</item>
+        <item name="strokeColor">@color/btn_outline_border</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:paddingStart">24dp</item>
+        <item name="android:paddingEnd">24dp</item>
+        <item name="rippleColor">@color/primary_light</item>
+    </style>
+    
+    <style name="ModernTextButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/primary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="rippleColor">@color/primary_light</item>
+    </style>
+    
+    <!-- Input Field Styles -->
+    <style name="ModernTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/input_border</item>
+        <item name="boxStrokeWidth">2dp</item>
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="boxCornerRadiusTopEnd">12dp</item>
+        <item name="boxCornerRadiusBottomStart">12dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+        <item name="boxBackgroundColor">@color/input_bg</item>
+        <item name="hintTextColor">@color/input_hint</item>
+        <item name="android:textColorHint">@color/input_hint</item>
+        <item name="errorTextColor">@color/error</item>
+        <item name="boxStrokeErrorColor">@color/input_border_error</item>
+    </style>
+    
+    <!-- Toolbar Styles -->
+    <style name="ModernToolbar" parent="Widget.MaterialComponents.Toolbar">
+        <item name="android:background">@color/bg_surface</item>
+        <item name="titleTextColor">@color/text_primary</item>
+        <item name="subtitleTextColor">@color/text_secondary</item>
+        <item name="android:elevation">4dp</item>
+        <item name="titleTextAppearance">@style/ToolbarTitleTextAppearance</item>
+        <item name="subtitleTextAppearance">@style/ToolbarSubtitleTextAppearance</item>
+    </style>
+    
+    <style name="ModernToolbar.Gradient" parent="ModernToolbar">
+        <item name="android:background">@drawable/bg_gradient_toolbar</item>
+        <item name="titleTextColor">@color/text_on_primary</item>
+        <item name="subtitleTextColor">@color/text_on_secondary</item>
+    </style>
+    
+    <!-- Text Appearances -->
+    <style name="ToolbarTitleTextAppearance" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+    
+    <style name="ToolbarSubtitleTextAppearance" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+    </style>
+    
+    <!-- Question Option Styles -->
+    <style name="QuestionOption" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">12dp</item>
+        <item name="cardElevation">2dp</item>
+        <item name="cardBackgroundColor">@color/unselected_option</item>
+        <item name="strokeColor">@color/border</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="rippleColor">@color/selected_option</item>
+    </style>
+    
+    <style name="QuestionOption.Selected" parent="QuestionOption">
+        <item name="cardBackgroundColor">@color/selected_option</item>
+        <item name="strokeColor">@color/primary</item>
+        <item name="strokeWidth">2dp</item>
+    </style>
+    
+    <style name="QuestionOption.Correct" parent="QuestionOption">
+        <item name="cardBackgroundColor">@color/correct_answer</item>
+        <item name="strokeColor">@color/success</item>
+        <item name="strokeWidth">2dp</item>
+    </style>
+    
+    <style name="QuestionOption.Wrong" parent="QuestionOption">
+        <item name="cardBackgroundColor">@color/wrong_answer</item>
+        <item name="strokeColor">@color/error</item>
+        <item name="strokeWidth">2dp</item>
+    </style>
+    
+    <!-- Stats Card Styles -->
+    <style name="StatsCard" parent="ModernCardView">
+        <item name="cardBackgroundColor">@color/bg_elevated</item>
+        <item name="cardElevation">6dp</item>
+        <item name="android:padding">20dp</item>
+    </style>
+    
+    <!-- Navigation Item Style -->
+    <style name="NavigationItem">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+    </style>
+    
+    <!-- Animation and Transition -->
+    <style name="FabAnimation" parent="">
+        <item name="android:layout_gravity">bottom|end</item>
+        <item name="android:layout_margin">16dp</item>
+        <item name="android:elevation">8dp</item>
+    </style>
+
+    <!-- Bottom Navigation Text Styles -->
+    <style name="BottomNavTextActive" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="BottomNavTextInactive" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textSize">12sp</item>
+    </style>
+</resources>

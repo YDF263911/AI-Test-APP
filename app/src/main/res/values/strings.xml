@@ -1,0 +1,57 @@
+<resources>
+    <string name="app_name">AITestBank</string>
+    
+    <!-- 首页相关字符串 -->
+    <string name="home_title">AI智能题库</string>
+    <string name="home_subtitle">精选题库，助你高效刷题</string>
+    <string name="search_hint">搜索题库、题目</string>
+    <string name="category_title">题库分类</string>
+    <string name="view_all">查看全部</string>
+    
+    <!-- 错题本相关字符串 -->
+    <string name="wrong_question_title">错题本</string>
+    <string name="wrong_question_subtitle">温故知新，查漏补缺</string>
+    <string name="wrong_count">0</string>
+    <string name="wrong_total">错题总数</string>
+    <string name="mastered_count">0</string>
+    <string name="mastered_text">已掌握</string>
+    <string name="review_rate">0%</string>
+    <string name="review_progress">复习进度</string>
+    <string name="filter_label">筛选条件:</string>
+    <string name="clear_mastered">清除已掌握</string>
+    <string name="empty_wrong_title">暂无错题</string>
+    <string name="empty_wrong_subtitle">保持全对，继续加油！</string>
+    <string name="go_to_practice">去刷题</string>
+    
+    <!-- 题目相关字符串 -->
+    <string name="question_number">第 %d 题</string>
+    <string name="difficulty_label">难度: %s</string>
+    <string name="single_choice">单选题</string>
+    <string name="multiple_choice">多选题</string>
+    <string name="judgment_question">判断题</string>
+    <string name="ai_analysis">AI智能解析</string>
+    <string name="previous_question">上一题</string>
+    <string name="next_question">下一题</string>
+    <string name="mark_question">标记</string>
+    <string name="submit_answer">提交</string>
+    
+    <!-- 个人资料相关字符串 -->
+    <string name="user_name_default">AI刷题用户</string>
+    <string name="user_level_default">刷题新手</string>
+    <string name="total_questions">0</string>
+    <string name="total_questions_label">刷题总数</string>
+    <string name="accuracy_rate">0%</string>
+    <string name="accuracy_rate_label">正确率</string>
+    <string name="wrong_count_label">错题数量</string>
+    <string name="study_plan">学习计划</string>
+    <string name="settings">设置</string>
+    <string name="clear_cache">清除缓存</string>
+    <string name="about_us">关于我们</string>
+    
+    <!-- 通用字符串 -->
+    <string name="search_icon_desc">搜索图标</string>
+    <string name="info_icon_desc">信息图标</string>
+    <string name="avatar_icon_desc">用户头像</string>
+    <string name="settings_icon_desc">设置图标</string>
+    <string name="more_icon_desc">更多图标</string>
+</resources>
