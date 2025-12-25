@@ -1,96 +1,32 @@
 package com.example.aitestbank.model;
 
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
-import androidx.room.ColumnInfo;
-import androidx.room.Index;
-import androidx.room.ForeignKey;
-
 import java.util.Date;
 
 /**
- * 错题数据模型 - 本地数据库存储
+ * 错题数据模型 - Supabase存储
  */
-@Entity(
-    tableName = "wrong_questions",
-    indices = {
-        @Index(value = {"user_id", "question_id"}, unique = true),
-        @Index(value = {"user_id"}),
-        @Index(value = {"subject"}),
-        @Index(value = {"mastery_status"})
-    },
-    foreignKeys = {
-        @ForeignKey(
-            entity = User.class,
-            parentColumns = "user_id",
-            childColumns = "user_id",
-            onDelete = ForeignKey.CASCADE
-        )
-    }
-)
 public class WrongQuestion {
     
-    @PrimaryKey(autoGenerate = true)
     private int id;
-    
-    @ColumnInfo(name = "question_id")
     private String questionId;
-    
-    @ColumnInfo(name = "user_id")
     private String userId;
-    
-    @ColumnInfo(name = "question_text")
     private String questionText;
-    
-    @ColumnInfo(name = "question_type")
     private String questionType;
-    
-    @ColumnInfo(name = "options")
     private String options; // JSON格式的选项数组
-    
-    @ColumnInfo(name = "correct_answer")
     private String correctAnswer;
-    
-    @ColumnInfo(name = "user_answer")
     private String userAnswer;
-    
-    @ColumnInfo(name = "explanation")
     private String explanation;
-    
-    @ColumnInfo(name = "subject")
     private String subject;
-    
-    @ColumnInfo(name = "difficulty")
     private String difficulty;
-    
-    @ColumnInfo(name = "wrong_count")
     private int wrongCount;
-    
-    @ColumnInfo(name = "mastery_status")
     private String masteryStatus; // not_mastered, partially_mastered, mastered
-    
-    @ColumnInfo(name = "priority")
     private int priority; // 1-5，5为最高优先级
-    
-    @ColumnInfo(name = "review_count")
     private int reviewCount;
-    
-    @ColumnInfo(name = "created_at")
     private long createdAt;
-    
-    @ColumnInfo(name = "last_wrong_time")
     private long lastWrongTime;
-    
-    @ColumnInfo(name = "last_review_time")
     private long lastReviewTime;
-    
-    @ColumnInfo(name = "tags")
     private String tags; // JSON格式的标签数组
-    
-    @ColumnInfo(name = "is_marked")
     private boolean isMarked; // 是否被标记
-    
-    @ColumnInfo(name = "notes")
     private String notes; // 用户笔记
     
     // 构造函数

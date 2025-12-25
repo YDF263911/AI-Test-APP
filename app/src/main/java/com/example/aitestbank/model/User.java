@@ -1,17 +1,12 @@
 package com.example.aitestbank.model;
 
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
-
 import java.util.Date;
 
 /**
  * 用户数据模型
  */
-@Entity(tableName = "users")
 public class User {
     
-    @PrimaryKey
     private String id;
     
     private String deviceId;
