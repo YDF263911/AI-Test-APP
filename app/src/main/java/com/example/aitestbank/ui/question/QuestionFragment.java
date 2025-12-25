@@ -19,6 +19,7 @@ import com.example.aitestbank.R;
 import com.example.aitestbank.model.Question;
 import com.example.aitestbank.service.AIService;
 import com.example.aitestbank.supabase.SimpleSupabaseClient;
+import com.example.aitestbank.ui.result.ExamResultFragment;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -73,6 +74,7 @@ public class QuestionFragment extends Fragment {
     private String selectedAnswer = "";
     private boolean isAnswered = false;
     private Set<String> markedQuestions = new HashSet<>();  // 存储已标记的题目ID
+    private List<Integer> userAnswers = new ArrayList<>();  // 存储用户答案，-1表示未答题
     
     @Nullable
     @Override
@@ -149,10 +151,7 @@ public class QuestionFragment extends Fragment {
                 displayCurrentQuestion();
             } else {
                 // 最后一题，点击交卷
-                if (isAdded() && getContext() != null) {
-                    Toast.makeText(getContext(), "交卷成功！", Toast.LENGTH_SHORT).show();
-                    // 这里可以添加交卷后的逻辑，比如显示成绩、返回首页等
-                }
+                submitExam();
             }
         });
         
@@ -552,6 +551,7 @@ public class QuestionFragment extends Fragment {
         questions.add(q2);
         
         currentQuestionIndex = 0;
+        initializeUserAnswers();
         displayCurrentQuestion();
     }
     
@@ -660,6 +660,9 @@ public class QuestionFragment extends Fragment {
         }
         
         selectedAnswer = answer;
+        
+        // 记录用户答案
+        userAnswers.set(currentQuestionIndex, Integer.parseInt(answer));
         
         // 重置所有选项背景
         for (int i = 0; i < optionsContainer.getChildCount(); i++) {
@@ -868,5 +871,49 @@ public class QuestionFragment extends Fragment {
         aiAnalysisContainer.setVisibility(View.GONE);
         isAIExpanded = false;
         aiAnalysisContent.setVisibility(View.GONE);
+    }
+    
+    /**
+     * 初始化用户答案列表
+     */
+    private void initializeUserAnswers() {
+        userAnswers.clear();
+        if (questions != null) {
+            for (int i = 0; i < questions.size(); i++) {
+                userAnswers.add(-1); // -1表示未答题
+            }
+        }
+    }
+    
+    /**
+     * 交卷处理
+     */
+    private void submitExam() {
+        // 记录当前题目的答案
+        if (!selectedAnswer.isEmpty()) {
+            userAnswers.set(currentQuestionIndex, Integer.parseInt(selectedAnswer));
+        }
+        
+        // 显示结果页面
+        if (getActivity() != null) {
+            ExamResultFragment resultFragment = new ExamResultFragment();
+            
+            // 传递数据给结果页面
+            Bundle args = new Bundle();
+            args.putParcelableArrayList("questions", new ArrayList<>(questions));
+            args.putIntegerArrayList("user_answers", new ArrayList<>(userAnswers));
+            resultFragment.setArguments(args);
+            
+            // 跳转到结果页面
+            getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(android.R.id.content, resultFragment)
+                .addToBackStack(null)
+                .commit();
+        }
+        
+        if (isAdded() && getContext() != null) {
+            Toast.makeText(getContext(), "交卷成功！", Toast.LENGTH_SHORT).show();
+        }
     }
 }
