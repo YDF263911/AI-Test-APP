@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_secondary">
+
+    <!-- 顶部渐变标题栏 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:background="@drawable/bg_gradient_niuke"
+        android:orientation="vertical"
+        android:gravity="center">
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="题目筛选"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+            
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="请根据您的学习情况选择题目"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:alpha="0.9" />
+    </LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:paddingBottom="80dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="120dp">
+
+            <!-- 难度筛选 -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/NiukeCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/niuke_spacing_large"
+                android:layout_marginBottom="@dimen/niuke_spacing_large">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/niuke_card_padding_large">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="题目难度"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="@dimen/niuke_spacing_medium" />
+
+                    <RadioGroup
+                        android:id="@+id/difficulty_group"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/difficulty_all"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="全部难度"
+                            android:textColor="@color/text_primary"
+                            android:checked="true" />
+
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/difficulty_easy"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="简单"
+                            android:textColor="@color/text_primary" />
+
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/difficulty_medium"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="中等"
+                            android:textColor="@color/text_primary" />
+
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/difficulty_hard"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="困难"
+                            android:textColor="@color/text_primary" />
+                    </RadioGroup>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 题型筛选 -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/NiukeCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/niuke_spacing_large"
+                android:layout_marginBottom="@dimen/niuke_spacing_large">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/niuke_card_padding_large">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="题目类型"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="@dimen/niuke_spacing_medium" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_single"
+                            style="@style/NiukeBadge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="单选题"
+                            android:layout_marginEnd="@dimen/niuke_spacing_small"
+                            app:checkedIconVisible="false"
+                            app:chipBackgroundColor="@color/primary_blue" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_multiple"
+                            style="@style/NiukeBadge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="多选题"
+                            android:layout_marginEnd="@dimen/niuke_spacing_small"
+                            app:checkedIconVisible="false"
+                            app:chipBackgroundColor="@color/primary_blue" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_judge"
+                            style="@style/NiukeBadge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="判断题"
+                            app:checkedIconVisible="false"
+                            app:chipBackgroundColor="@color/primary_blue" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 题目数量 -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/NiukeCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/niuke_spacing_large"
+                android:layout_marginBottom="@dimen/niuke_spacing_large">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/niuke_card_padding_large">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="题目数量"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="@dimen/niuke_spacing_medium" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="练习数量："
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/question_count_text"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="10题"
+                            android:textColor="@color/primary_blue"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:gravity="end" />
+                    </LinearLayout>
+
+                    <SeekBar
+                        android:id="@+id/question_count_seekbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/niuke_spacing_small"
+                        android:progress="10"
+                        android:max="50" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="5题"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="50题"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- 底部操作栏 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="60dp"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="@dimen/niuke_spacing_large"
+        android:elevation="4dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/back_button"
+            style="@style/NiukeButton.Outline"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="返回"
+            android:layout_marginEnd="@dimen/niuke_spacing_small" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/start_button"
+            style="@style/NiukeButton"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="2"
+            android:text="开始刷题"
+            android:layout_marginHorizontal="@dimen/niuke_spacing_small" />
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

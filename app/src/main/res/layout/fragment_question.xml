@@ -5,11 +5,33 @@
     android:layout_height="match_parent"
     android:background="@color/bg_secondary">
 
-    <!-- 渐变头部 -->
-    <View
+    <!-- 顶部渐变标题栏 -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:background="@drawable/bg_gradient_blue" />
+        android:layout_height="160dp"
+        android:background="@drawable/bg_gradient_niuke"
+        android:orientation="vertical"
+        android:gravity="center">
+        
+        <!-- 题目进度信息 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="正在答题"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+            
+        <TextView
+            android:id="@+id/question_progress_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="第1题/共10题"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:alpha="0.9" />
+    </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/question_scroll_view"
@@ -23,107 +45,53 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- 题目进度卡片 -->
+            <!-- 题目信息卡片 -->
             <com.google.android.material.card.MaterialCardView
-                style="@style/ModernCardView"
+                style="@style/NiukeCardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="80dp"
-                android:layout_marginBottom="16dp"
-                app:cardElevation="8dp">
+                android:layout_marginHorizontal="@dimen/niuke_spacing_large"
+                android:layout_marginTop="120dp"
+                android:layout_marginBottom="@dimen/niuke_spacing_large">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="20dp">
+                    android:padding="@dimen/niuke_card_padding_large">
 
-                    <!-- 进度条 -->
+                    <!-- 题目信息头部 -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:layout_marginBottom="12dp">
+                        android:layout_marginBottom="@dimen/niuke_spacing_large">
 
+                        <!-- 题型标签 -->
                         <TextView
-                            android:id="@+id/question_number"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="第 1 题 / 共 10 题"
-                            android:textColor="@color/text_primary"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <!-- 进度指示器 -->
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <View
-                                android:layout_width="6dp"
-                                android:layout_height="6dp"
-                                android:background="@color/primary"
-                                android:layout_marginEnd="4dp" />
-
-                            <View
-                                android:layout_width="6dp"
-                                android:layout_height="6dp"
-                                android:background="@color/primary"
-                                android:layout_marginEnd="4dp" />
-
-                            <View
-                                android:layout_width="6dp"
-                                android:layout_height="6dp"
-                                android:background="@color/primary"
-                                android:layout_marginEnd="4dp" />
-
-                            <View
-                                android:layout_width="6dp"
-                                android:layout_height="6dp"
-                                android:background="@color/text_secondary"
-                                android:layout_marginEnd="4dp" />
-
-                            <View
-                                android:layout_width="6dp"
-                                android:layout_height="6dp"
-                                android:background="@color/text_secondary"
-                                android:layout_marginEnd="4dp" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <!-- 进度条 -->
-                    <ProgressBar
-                        android:id="@+id/progress_bar"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="6dp"
-                        android:progress="30"
-                        android:max="100"
-                        android:progressDrawable="@drawable/progress_horizontal"
-                        android:layout_marginBottom="16dp" />
-
-                    <!-- 题目信息 -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/question_type"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="单选题"
-                            android:textColor="@color/success"
+                            android:textColor="@color/white"
                             android:textSize="12sp"
                             android:textStyle="bold"
-                            android:background="@drawable/bg_badge_green"
+                            android:background="@drawable/bg_badge_niuke_blue"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="4dp"
+                            android:layout_marginEnd="@dimen/niuke_spacing_medium" />
+
+                        <!-- 难度标签 -->
+                        <TextView
+                            android:id="@+id/question_difficulty"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="中等"
+                            android:textColor="@color/white"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:background="@drawable/bg_badge_niuke_orange"
                             android:paddingHorizontal="8dp"
                             android:paddingVertical="4dp" />
 
@@ -132,59 +100,18 @@
                             android:layout_height="1dp"
                             android:layout_weight="1" />
 
-                        <LinearLayout
+                        <!-- 题目编号 -->
+                        <TextView
+                            android:id="@+id/question_number"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="难度"
-                                android:textColor="@color/text_secondary"
-                                android:textSize="12sp"
-                                android:layout_marginEnd="4dp" />
-
-                            <TextView
-                                android:id="@+id/question_difficulty"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="★★★☆☆"
-                                android:textColor="@color/warning"
-                                android:textSize="12sp" />
-
-                        </LinearLayout>
+                            android:text="#001"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp" />
 
                     </LinearLayout>
 
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- 题目内容卡片 -->
-            <com.google.android.material.card.MaterialCardView
-                style="@style/ModernCardView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginBottom="20dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="题目"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="8dp" />
-
+                    <!-- 题目内容 -->
                     <TextView
                         android:id="@+id/question_content"
                         android:layout_width="match_parent"
@@ -192,42 +119,101 @@
                         android:text="下列哪个是Java的基本数据类型？"
                         android:textColor="@color/text_primary"
                         android:textSize="16sp"
-                        android:lineSpacingExtra="4dp" />
+                        android:lineSpacingExtra="6dp"
+                        android:layout_marginBottom="@dimen/niuke_spacing_large"
+                        style="@style/NiukeText.Body" />
 
-                    <!-- 题目图片占位符 -->
-                    <ImageView
-                        android:id="@+id/question_image"
+                    <!-- 进度条 -->
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="200dp"
-                        android:layout_marginTop="16dp"
-                        android:background="@color/bg_secondary"
-                        android:visibility="gone"
-                        android:scaleType="centerCrop" />
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="@dimen/niuke_spacing_medium">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="答题进度"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/progress_percent"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="30%"
+                                android:textColor="@color/primary_blue"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <ProgressBar
+                            android:id="@+id/progress_bar"
+                            style="@style/NiukeProgressBar"
+                            android:layout_width="match_parent"
+                            android:layout_height="4dp"
+                            android:progress="30"
+                            android:max="100"
+                            android:layout_marginTop="4dp" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
+
+
             <!-- 选项区域 -->
-            <LinearLayout
-                android:id="@+id/options_container"
+            <com.google.android.material.card.MaterialCardView
+                style="@style/NiukeCardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingHorizontal="16dp"
-                android:layout_marginBottom="20dp" />
+                android:layout_marginHorizontal="@dimen/niuke_spacing_large"
+                android:layout_marginBottom="@dimen/niuke_spacing_large">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/niuke_card_padding_medium">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="请选择答案"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="@dimen/niuke_spacing_medium" />
+
+                    <LinearLayout
+                        android:id="@+id/options_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- AI智能解析区域 -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/ai_analysis_container"
-                style="@style/ModernCardView"
+                style="@style/NiukeCardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginBottom="20dp"
-                android:visibility="gone"
-                app:strokeColor="@color/accent"
-                app:strokeWidth="1dp">
+                android:layout_marginHorizontal="@dimen/niuke_spacing_large"
+                android:layout_marginBottom="@dimen/niuke_spacing_large"
+                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -238,34 +224,34 @@
                     <LinearLayout
                         android:id="@+id/ai_analysis_header"
                         android:layout_width="match_parent"
-                        android:layout_height="56dp"
+                        android:layout_height="48dp"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:paddingHorizontal="20dp"
+                        android:paddingHorizontal="@dimen/niuke_card_padding_medium"
                         android:background="?attr/selectableItemBackground"
                         android:clickable="true"
                         android:focusable="true">
 
                         <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_smart_toy"
-                            app:tint="@color/accent" />
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_ai_analysis"
+                            app:tint="@color/primary_blue" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:layout_marginStart="12dp"
-                            android:text="AI 智能解析"
+                            android:layout_marginStart="@dimen/niuke_spacing_medium"
+                            android:text="AI智能解析"
                             android:textColor="@color/text_primary"
-                            android:textSize="16sp"
+                            android:textSize="14sp"
                             android:textStyle="bold" />
 
                         <ImageView
                             android:id="@+id/ai_analysis_expand_icon"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
                             android:src="@drawable/ic_expand_more"
                             app:tint="@color/text_secondary" />
 
@@ -277,53 +263,54 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:visibility="gone">
+                        android:visibility="gone"
+                        android:padding="@dimen/niuke_card_padding_medium">
 
-                        <!-- 基础解析 -->
+                        <!-- 正确答案 -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="20dp">
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="@dimen/niuke_spacing_medium">
 
                             <TextView
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="✓ 正确答案"
+                                android:text="✓"
                                 android:textColor="@color/success"
                                 android:textSize="14sp"
+                                android:layout_marginEnd="@dimen/niuke_spacing_small" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="正确答案："
+                                android:textColor="@color/text_primary"
+                                android:textSize="14sp"
                                 android:textStyle="bold"
-                                android:layout_marginBottom="8dp" />
+                                android:layout_marginEnd="@dimen/niuke_spacing_small" />
 
                             <TextView
                                 android:id="@+id/correct_answer_text"
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="A. int"
-                                android:textColor="@color/text_primary"
+                                android:textColor="@color/success"
                                 android:textSize="14sp"
-                                android:layout_marginBottom="16dp" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="💡 解析"
-                                android:textColor="@color/primary"
-                                android:textSize="14sp"
-                                android:textStyle="bold"
-                                android:layout_marginBottom="8dp" />
-
-                            <TextView
-                                android:id="@+id/ai_analysis_text"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Java的基本数据类型包括：byte, short, int, long, float, double, char, boolean。String是引用类型，不是基本数据类型。"
-                                android:textColor="@color/text_primary"
-                                android:textSize="14sp"
-                                android:lineSpacingExtra="4dp"
-                                android:layout_marginBottom="16dp" />
+                                android:textStyle="bold" />
 
                         </LinearLayout>
+
+                        <!-- 解析内容 -->
+                        <TextView
+                            android:id="@+id/ai_analysis_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Java的基本数据类型包括：byte, short, int, long, float, double, char, boolean。String是引用类型，不是基本数据类型。"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:lineSpacingExtra="6dp" />
 
                     </LinearLayout>
 
@@ -336,99 +323,56 @@
     </androidx.core.widget.NestedScrollView>
 
     <!-- 底部操作栏 -->
-    <com.google.android.material.card.MaterialCardView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_gravity="bottom"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="12dp"
-        app:cardBackgroundColor="@color/bg_surface">
+        android:layout_marginBottom="80dp"
+        android:layout_marginHorizontal="16dp"
+        android:background="@color/transparent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- 上一题按钮 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/previous_button"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingHorizontal="10dp">
+            android:layout_weight="1"
+            android:text="上一题"
+            android:textSize="16sp"
+            android:layout_marginEnd="8dp"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/primary_blue"
+            app:cornerRadius="12dp"
+            app:strokeColor="@color/primary_blue"
+            app:strokeWidth="1dp"
+            android:minHeight="0dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:elevation="2dp" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/previous_button"
-                style="@style/ModernTextButton"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_weight="1"
-                android:text="上一题"
-                android:textSize="15sp"
-                android:letterSpacing="0"
-                app:icon="@drawable/ic_arrow_back"
-                app:iconSize="20dp"
-                app:iconGravity="textStart"
-                app:iconPadding="8dp"
-                android:insetTop="4dp"
-                android:insetBottom="4dp" />
+        <!-- 下一题按钮 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/next_button"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="下一题"
+            android:textSize="16sp"
+            android:layout_marginStart="8dp"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/primary_blue"
+            android:textColor="@color/white"
+            app:cornerRadius="12dp"
+            android:minHeight="0dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:elevation="2dp" />
 
-            <View
-                android:layout_width="1dp"
-                android:layout_height="32dp"
-                android:background="@color/divider"
-                android:layout_marginHorizontal="4dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/mark_button"
-                style="@style/ModernButton.Secondary"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_weight="0.9"
-                android:text="标记"
-                android:textSize="15sp"
-                android:letterSpacing="0"
-                app:icon="@drawable/ic_bookmark_border"
-                app:iconSize="20dp"
-                app:iconGravity="textStart"
-                app:iconPadding="8dp"
-                android:insetTop="4dp"
-                android:insetBottom="4dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/submit_button"
-                style="@style/ModernButton"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_weight="1.2"
-                android:text="提交"
-                android:textSize="15sp"
-                android:letterSpacing="0"
-                app:icon="@drawable/ic_check"
-                app:iconSize="20dp"
-                app:iconGravity="textEnd"
-                app:iconPadding="8dp"
-                android:insetTop="4dp"
-                android:insetBottom="4dp" />
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="32dp"
-                android:background="@color/divider"
-                android:layout_marginHorizontal="4dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/next_button"
-                style="@style/ModernTextButton"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_weight="1"
-                android:text="下一题"
-                android:textSize="15sp"
-                android:letterSpacing="0"
-                app:icon="@drawable/ic_arrow_forward"
-                app:iconSize="20dp"
-                app:iconGravity="textEnd"
-                app:iconPadding="8dp"
-                android:insetTop="4dp"
-                android:insetBottom="4dp" />
-
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -5,12 +5,6 @@
     android:layout_height="match_parent"
     android:background="@color/bg_secondary">
 
-    <!-- 渐变背景头部 -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="280dp"
-        android:background="@drawable/bg_gradient_blue" />
-
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,157 +13,166 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="80dp">
-
-            <!-- 欢迎标题区域 -->
+            android:orientation="vertical">
+            
+            <!-- 可滚动背景容器（覆盖欢迎标题和统计卡片） -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="24dp"
-                android:gravity="center_horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="AI智能题库"
-                    android:textColor="@color/text_on_primary"
-                    android:textSize="28sp"
-                    android:textStyle="bold"
-                    android:shadowColor="@color/shadow"
-                    android:shadowDx="0"
-                    android:shadowDy="2"
-                    android:shadowRadius="4" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="让学习更智能，让进步更高效"
-                    android:textColor="@color/text_on_secondary"
-                    android:textSize="14sp"
-                    android:layout_marginTop="8dp" />
-
-            </LinearLayout>
-
-            <!-- 统计卡片 -->
-            <com.google.android.material.card.MaterialCardView
-                style="@style/ModernCardView.Compact"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginBottom="20dp"
-                app:cardElevation="4dp">
-
+                android:background="@drawable/bg_gradient_blue">
+                
+                <!-- 欢迎标题区域 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingVertical="16dp">
+                    android:orientation="vertical"
+                    android:padding="24dp"
+                    android:gravity="center_horizontal">
 
-                    <!-- 总题数 -->
-                    <LinearLayout
-                        android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:gravity="center">
+                        android:text="AI智能题库"
+                        android:textColor="@color/text_on_primary"
+                        android:textSize="28sp"
+                        android:textStyle="bold"
+                        android:shadowColor="@color/shadow"
+                        android:shadowDx="0"
+                        android:shadowDy="2"
+                        android:shadowRadius="4" />
 
-                        <TextView
-                            android:id="@+id/tv_total_questions"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="1,280"
-                            android:textColor="@color/text_primary"
-                            android:textSize="22sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="总题数"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="11sp"
-                            android:layout_marginTop="4dp" />
-                    </LinearLayout>
-
-                    <!-- 分隔线 -->
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="50dp"
-                        android:layout_marginHorizontal="12dp"
-                        android:background="@color/divider" />
-
-                    <!-- 正确率 -->
-                    <LinearLayout
-                        android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:gravity="center">
-
-                        <TextView
-                            android:id="@+id/tv_accuracy"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="86%"
-                            android:textColor="@color/text_primary"
-                            android:textSize="22sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="正确率"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="11sp"
-                            android:layout_marginTop="4dp" />
-                    </LinearLayout>
-
-                    <!-- 分隔线 -->
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="50dp"
-                        android:layout_marginHorizontal="12dp"
-                        android:background="@color/divider" />
-
-                    <!-- 学习天数 -->
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:gravity="center">
-
-                        <TextView
-                            android:id="@+id/tv_study_days"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="15"
-                            android:textColor="@color/text_primary"
-                            android:textSize="22sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="学习天数"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="11sp"
-                            android:layout_marginTop="4dp" />
-                    </LinearLayout>
+                        android:text="让学习更智能，让进步更高效"
+                        android:textColor="@color/text_on_secondary"
+                        android:textSize="14sp"
+                        android:layout_marginTop="8dp" />
 
                 </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
+                <!-- 统计卡片 -->
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/ModernCardView.Compact"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginBottom="20dp"
+                    app:cardElevation="4dp">
 
-            <!-- 题库分类标题 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingVertical="16dp">
+
+                        <!-- 总题数 -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <TextView
+                                android:id="@+id/tv_total_questions"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="1,280"
+                                android:textColor="@color/text_primary"
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="总题数"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="11sp"
+                                android:layout_marginTop="4dp" />
+                        </LinearLayout>
+
+                        <!-- 分隔线 -->
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="50dp"
+                            android:layout_marginHorizontal="12dp"
+                            android:background="@color/divider" />
+
+                        <!-- 正确率 -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <TextView
+                                android:id="@+id/tv_accuracy"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="86%"
+                                android:textColor="@color/text_primary"
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="正确率"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="11sp"
+                                android:layout_marginTop="4dp" />
+                        </LinearLayout>
+
+                        <!-- 分隔线 -->
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="50dp"
+                            android:layout_marginHorizontal="12dp"
+                            android:background="@color/divider" />
+
+                        <!-- 学习天数 -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <TextView
+                                android:id="@+id/tv_study_days"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="15"
+                                android:textColor="@color/text_primary"
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="学习天数"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="11sp"
+                                android:layout_marginTop="4dp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+            <!-- 题库分类标题（在背景之外） -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:paddingHorizontal="16dp"
+                android:paddingTop="20dp"
                 android:paddingBottom="16dp">
 
                 <TextView
