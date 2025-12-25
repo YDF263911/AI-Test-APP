@@ -1,6 +1,7 @@
 package com.example.aitestbank.model;
 
 import com.google.gson.annotations.SerializedName;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Date;
 
@@ -8,7 +9,7 @@ import java.util.Date;
  * 简化的题目数据模型 - 不使用Room注解
  * 用于API接口的基本数据传输
  */
-public class Question {
+public class Question implements Serializable {
     
     @SerializedName("id")
     private String id;

@@ -46,36 +46,55 @@ public class AnswerCardAdapter extends RecyclerView.Adapter<AnswerCardAdapter.Vi
     
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Question question = questions.get(position);
-        Boolean isCorrect = userAnswers.get(position);
-        
-        // 设置题目编号
-        holder.numberText.setText(String.valueOf(position + 1));
-        
-        // 设置状态样式
-        if (isCorrect == null) {
-            // 未答题
+        try {
+            // 安全检查
+            if (questions == null || userAnswers == null || 
+                position >= questions.size() || position >= userAnswers.size()) {
+                holder.numberText.setText(String.valueOf(position + 1));
+                holder.itemView.setBackgroundResource(R.drawable.bg_answer_unanswered);
+                holder.numberText.setTextColor(holder.itemView.getContext().getResources()
+                    .getColor(R.color.text_secondary));
+                return;
+            }
+            
+            Question question = questions.get(position);
+            Boolean isCorrect = userAnswers.get(position);
+            
+            // 设置题目编号
+            holder.numberText.setText(String.valueOf(position + 1));
+            
+            // 设置状态样式
+            if (isCorrect == null) {
+                // 未答题
+                holder.itemView.setBackgroundResource(R.drawable.bg_answer_unanswered);
+                holder.numberText.setTextColor(holder.itemView.getContext().getResources()
+                    .getColor(R.color.text_secondary));
+            } else if (isCorrect) {
+                // 正确
+                holder.itemView.setBackgroundResource(R.drawable.bg_answer_correct);
+                holder.numberText.setTextColor(holder.itemView.getContext().getResources()
+                    .getColor(R.color.white));
+            } else {
+                // 错误
+                holder.itemView.setBackgroundResource(R.drawable.bg_answer_wrong);
+                holder.numberText.setTextColor(holder.itemView.getContext().getResources()
+                    .getColor(R.color.white));
+            }
+            
+            // 设置点击事件
+            holder.itemView.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onItemClick(position, question, isCorrect != null && isCorrect);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            // 出错时显示默认状态
+            holder.numberText.setText(String.valueOf(position + 1));
             holder.itemView.setBackgroundResource(R.drawable.bg_answer_unanswered);
             holder.numberText.setTextColor(holder.itemView.getContext().getResources()
                 .getColor(R.color.text_secondary));
-        } else if (isCorrect) {
-            // 正确
-            holder.itemView.setBackgroundResource(R.drawable.bg_answer_correct);
-            holder.numberText.setTextColor(holder.itemView.getContext().getResources()
-                .getColor(R.color.white));
-        } else {
-            // 错误
-            holder.itemView.setBackgroundResource(R.drawable.bg_answer_wrong);
-            holder.numberText.setTextColor(holder.itemView.getContext().getResources()
-                .getColor(R.color.white));
         }
-        
-        // 设置点击事件
-        holder.itemView.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onItemClick(position, question, isCorrect != null && isCorrect);
-            }
-        });
     }
     
     @Override

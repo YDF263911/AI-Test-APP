@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 // import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -98,6 +99,9 @@ public class QuestionFragment extends Fragment {
         } else {
             loadQuestions();
         }
+        
+        // 更新进度信息
+        updateProgressInfo();
     }
     
     private void initViews(View view) {
@@ -169,6 +173,9 @@ public class QuestionFragment extends Fragment {
             aiAnalysisContent.setVisibility(View.GONE);
             // 这里可以添加收起动画
         }
+        
+        // 更新进度信息
+        updateProgressInfo();
     }
     
     private void loadQuestions() {
@@ -190,6 +197,9 @@ public class QuestionFragment extends Fragment {
             // 普通模式：从Supabase加载题目数据
             loadQuestionsFromSupabase();
         }
+        
+        // 更新进度信息
+        updateProgressInfo();
     }
     
     private void loadRandomQuestions() {
@@ -343,6 +353,7 @@ public class QuestionFragment extends Fragment {
                         questions.clear();
                         questions.addAll(loadedQuestions);
                         currentQuestionIndex = 0;
+                        initializeUserAnswers();
                         displayCurrentQuestion();
                         if (isAdded() && getContext() != null) {
                             Toast.makeText(getContext(), "成功加载 " + questions.size() + " 道题目", Toast.LENGTH_SHORT).show();
@@ -408,6 +419,9 @@ public class QuestionFragment extends Fragment {
             Log.e(TAG, "Failed to parse questions JSON", e);
             return null;
         }
+        
+        // 更新进度信息
+        updateProgressInfo();
     }
     
     private List<Question> parseWrongQuestionsFromSupabase(String jsonResult) {
@@ -444,6 +458,9 @@ public class QuestionFragment extends Fragment {
             Log.e(TAG, "Failed to parse wrong questions JSON", e);
             return null;
         }
+        
+        // 更新进度信息
+        updateProgressInfo();
     }
     
     private List<String> parseOptions(String optionsStr) {
@@ -463,6 +480,9 @@ public class QuestionFragment extends Fragment {
             defaultOptions.add("选项D");
             return defaultOptions;
         }
+        
+        // 更新进度信息
+        updateProgressInfo();
     }
     
     private void loadSingleQuestionFromArgs(Bundle args) {
@@ -510,6 +530,9 @@ public class QuestionFragment extends Fragment {
         if (isAdded() && getContext() != null) {
             Toast.makeText(getContext(), "开始答题", Toast.LENGTH_SHORT).show();
         }
+        
+        // 更新进度信息
+        updateProgressInfo();
     }
     
     private void loadMockQuestions() {
@@ -585,6 +608,9 @@ public class QuestionFragment extends Fragment {
         // 更新按钮状态
         updateButtonStates();
         
+        // 更新进度信息
+        updateProgressInfo();
+        
         // 滚动到顶部
         questionScrollView.scrollTo(0, 0);
     }
@@ -605,6 +631,9 @@ public class QuestionFragment extends Fragment {
             optionsContainer.addView(optionView);
             optionChar++;
         }
+        
+        // 更新进度信息
+        updateProgressInfo();
     }
     
     private View createOptionView(char optionChar, String optionText, int index) {
@@ -694,6 +723,9 @@ public class QuestionFragment extends Fragment {
                 textView.setTextColor(getResources().getColor(R.color.primary_blue));
             }
         }
+        
+        // 更新进度信息
+        updateProgressInfo();
     }
     
 
@@ -718,6 +750,9 @@ public class QuestionFragment extends Fragment {
             case "fill_blank": return "填空题";
             default: return "单选题";
         }
+        
+        // 更新进度信息
+        updateProgressInfo();
     }
     
 
@@ -731,6 +766,9 @@ public class QuestionFragment extends Fragment {
         if (show && isAdded() && getContext() != null) {
             Toast.makeText(getContext(), "AI正在生成智能解析...", Toast.LENGTH_SHORT).show();
         }
+        
+        // 更新进度信息
+        updateProgressInfo();
     }
     
     /**
@@ -797,6 +835,9 @@ public class QuestionFragment extends Fragment {
         if (isAdded() && getContext() != null) {
             Toast.makeText(getContext(), "AI智能解析生成完成", Toast.LENGTH_SHORT).show();
         }
+        
+        // 更新进度信息
+        updateProgressInfo();
     }
     
     /**
@@ -818,6 +859,9 @@ public class QuestionFragment extends Fragment {
 
             container.addView(textView);
         }
+        
+        // 更新进度信息
+        updateProgressInfo();
     }
     */
     
@@ -862,6 +906,9 @@ public class QuestionFragment extends Fragment {
                 ));
             }
         }
+        
+        // 更新进度信息
+        updateProgressInfo();
     }
     
     /**
@@ -883,37 +930,106 @@ public class QuestionFragment extends Fragment {
                 userAnswers.add(-1); // -1表示未答题
             }
         }
+        
+        // 更新进度信息
+        updateProgressInfo();
     }
     
     /**
      * 交卷处理
      */
     private void submitExam() {
-        // 记录当前题目的答案
-        if (!selectedAnswer.isEmpty()) {
-            userAnswers.set(currentQuestionIndex, Integer.parseInt(selectedAnswer));
+        try {
+            // 记录当前题目的答案
+            if (selectedAnswer != null && !selectedAnswer.isEmpty()) {
+                try {
+                    userAnswers.set(currentQuestionIndex, Integer.parseInt(selectedAnswer));
+                } catch (NumberFormatException e) {
+                    userAnswers.set(currentQuestionIndex, -1); // 设置为未答
+                }
+            }
+            
+            // 安全检查
+            if (questions == null) {
+                questions = new ArrayList<>();
+            }
+            if (userAnswers == null) {
+                userAnswers = new ArrayList<>();
+            }
+            
+            // 确保数据长度一致
+            while (userAnswers.size() < questions.size()) {
+                userAnswers.add(-1); // 未答题
+            }
+            
+            // 显示结果页面
+            if (getActivity() != null && isAdded()) {
+                ExamResultFragment resultFragment = new ExamResultFragment();
+                
+                // 传递数据给结果页面（使用Serializable）
+                Bundle args = new Bundle();
+                args.putSerializable("questions", new ArrayList<>(questions));
+                args.putIntegerArrayList("user_answers", new ArrayList<>(userAnswers));
+                resultFragment.setArguments(args);
+                
+                // 跳转到结果页面
+                getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(android.R.id.content, resultFragment)
+                    .addToBackStack(null)
+                    .commit();
+            }
+            
+            if (isAdded() && getContext() != null) {
+                Toast.makeText(getContext(), "交卷成功！", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (isAdded() && getContext() != null) {
+                Toast.makeText(getContext(), "交卷失败，请重试", Toast.LENGTH_SHORT).show();
+            }
         }
         
-        // 显示结果页面
-        if (getActivity() != null) {
-            ExamResultFragment resultFragment = new ExamResultFragment();
-            
-            // 传递数据给结果页面
-            Bundle args = new Bundle();
-            args.putParcelableArrayList("questions", new ArrayList<>(questions));
-            args.putIntegerArrayList("user_answers", new ArrayList<>(userAnswers));
-            resultFragment.setArguments(args);
-            
-            // 跳转到结果页面
-            getActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(android.R.id.content, resultFragment)
-                .addToBackStack(null)
-                .commit();
+        // 更新进度信息
+        updateProgressInfo();
+    }
+    
+    /**
+     * 更新进度信息
+     */
+    private void updateProgressInfo() {
+        if (!isAdded() || getActivity() == null || questions == null) return;
+        
+        int answeredCount = 0;
+        int totalCount = questions.size();
+        
+        // 统计已答题数
+        for (Integer answer : userAnswers) {
+            if (answer != null && answer >= 0) {
+                answeredCount++;
+            }
         }
         
-        if (isAdded() && getContext() != null) {
-            Toast.makeText(getContext(), "交卷成功！", Toast.LENGTH_SHORT).show();
+        // 更新进度显示
+        TextView progressPercent = getActivity().findViewById(R.id.progress_percent);
+        TextView questionProgressText = getActivity().findViewById(R.id.question_progress_text);
+        ProgressBar progressBar = getActivity().findViewById(R.id.progress_bar);
+        
+        if (progressPercent != null) {
+            int percent = totalCount > 0 ? (answeredCount * 100 / totalCount) : 0;
+            progressPercent.setText(percent + "%");
         }
+        
+        if (questionProgressText != null) {
+            questionProgressText.setText("第" + (currentQuestionIndex + 1) + "题/共" + totalCount + "题");
+        }
+        
+        if (progressBar != null) {
+            int progress = totalCount > 0 ? (answeredCount * 100 / totalCount) : 0;
+            progressBar.setProgress(progress);
+        }
+        
+        // 更新进度信息
+        updateProgressInfo();
     }
 }
