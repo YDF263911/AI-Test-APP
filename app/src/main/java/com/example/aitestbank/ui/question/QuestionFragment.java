@@ -610,13 +610,16 @@ public class QuestionFragment extends Fragment {
     private View createOptionView(char optionChar, String optionText, int index) {
         // 创建选项布局
         LinearLayout optionLayout = new LinearLayout(getContext());
-        optionLayout.setLayoutParams(new LinearLayout.LayoutParams(
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
-        ));
+        );
+        params.setMargins(0, 0, 0, 8);
+        optionLayout.setLayoutParams(params);
         optionLayout.setOrientation(LinearLayout.HORIZONTAL);
-        optionLayout.setPadding(16, 12, 16, 12);
-        optionLayout.setBackgroundResource(R.drawable.bg_search_bar);
+        optionLayout.setPadding(20, 20, 20, 20);
+        optionLayout.setBackgroundResource(R.drawable.bg_option_default);
+        optionLayout.setElevation(2f);
         
         // 选项字母
         TextView letterView = new TextView(getContext());
@@ -626,7 +629,8 @@ public class QuestionFragment extends Fragment {
         ));
         letterView.setText(String.valueOf(optionChar) + ".");
         letterView.setTextColor(getResources().getColor(R.color.text_primary));
-        letterView.setTextSize(16);
+        letterView.setTextSize(18);
+        letterView.setTypeface(null, android.graphics.Typeface.BOLD);
         letterView.setPadding(0, 0, 16, 0);
         
         // 选项文本
@@ -638,7 +642,8 @@ public class QuestionFragment extends Fragment {
         ));
         textView.setText(optionText);
         textView.setTextColor(getResources().getColor(R.color.text_primary));
-        textView.setTextSize(16);
+        textView.setTextSize(18);
+        textView.setLineSpacing(4, 1.0f);
         
         optionLayout.addView(letterView);
         optionLayout.addView(textView);
@@ -659,11 +664,33 @@ public class QuestionFragment extends Fragment {
         // 重置所有选项背景
         for (int i = 0; i < optionsContainer.getChildCount(); i++) {
             View child = optionsContainer.getChildAt(i);
-            child.setBackgroundResource(R.drawable.bg_search_bar);
+            child.setBackgroundResource(R.drawable.bg_option_default);
+            
+            // 重置文字颜色
+            if (child instanceof LinearLayout) {
+                LinearLayout layout = (LinearLayout) child;
+                if (layout.getChildCount() >= 2) {
+                    TextView letterView = (TextView) layout.getChildAt(0);
+                    TextView textView = (TextView) layout.getChildAt(1);
+                    letterView.setTextColor(getResources().getColor(R.color.text_primary));
+                    textView.setTextColor(getResources().getColor(R.color.text_primary));
+                }
+            }
         }
         
         // 高亮选中的选项
-        optionView.setBackgroundResource(R.drawable.bg_card_white);
+        optionView.setBackgroundResource(R.drawable.bg_option_selected_blue);
+        
+        // 设置选中文字颜色为蓝色
+        if (optionView instanceof LinearLayout) {
+            LinearLayout layout = (LinearLayout) optionView;
+            if (layout.getChildCount() >= 2) {
+                TextView letterView = (TextView) layout.getChildAt(0);
+                TextView textView = (TextView) layout.getChildAt(1);
+                letterView.setTextColor(getResources().getColor(R.color.primary_blue));
+                textView.setTextColor(getResources().getColor(R.color.primary_blue));
+            }
+        }
     }
     
 
