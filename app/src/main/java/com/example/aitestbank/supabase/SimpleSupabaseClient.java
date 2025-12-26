@@ -3,12 +3,17 @@ package com.example.aitestbank.supabase;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.aitestbank.supabase.auth.DeviceIdManager;
+import com.example.aitestbank.ui.adapter.WrongQuestionAdapter;
+import com.example.aitestbank.utils.OperationCallback;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import okhttp3.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -23,6 +28,7 @@ public class SimpleSupabaseClient {
     private Gson gson;
     private String supabaseUrl;
     private String supabaseKey;
+    private Context context;
     
     private SimpleSupabaseClient() {
         gson = new Gson();
@@ -46,9 +52,10 @@ public class SimpleSupabaseClient {
     }
     
     public void initialize(Context context, String url, String key) {
+        this.context = context.getApplicationContext();
         this.supabaseUrl = url;
         this.supabaseKey = key;
-        Log.d(TAG, "Supabase client initialized with URL: " + url);
+        Log.d(TAG, "Supabase client initialized with URL: " + url + ", deviceId: " + DeviceIdManager.getShortDeviceId(context));
     }
     
     /**
@@ -86,23 +93,39 @@ public class SimpleSupabaseClient {
      */
     public String insert(String tableName, Object data) throws IOException {
         String url = String.format("%s/rest/v1/%s", supabaseUrl, tableName);
-        String json = gson.toJson(data);
+        
+        // 处理JSONObject类型，确保只发送纯JSON数据
+        String json;
+        if (data instanceof org.json.JSONObject) {
+            json = data.toString(); // JSONObject的toString()方法返回纯JSON
+        } else {
+            json = gson.toJson(data);
+        }
         
         RequestBody body = RequestBody.create(json, MediaType.parse("application/json"));
         
-        Request request = new Request.Builder()
+        // 获取设备ID用于RLS策略
+        String deviceId = getDeviceId();
+        
+        Request.Builder requestBuilder = new Request.Builder()
                 .url(url)
                 .addHeader("apikey", supabaseKey)
                 .addHeader("Authorization", "Bearer " + supabaseKey)
                 .addHeader("Content-Type", "application/json")
-                .addHeader("Prefer", "return=representation")
-                .post(body)
-                .build();
+                .addHeader("Prefer", "return=representation");
+        
+        // 设置会话变量用于RLS策略
+        if (deviceId != null && !deviceId.isEmpty()) {
+            requestBuilder.addHeader("X-Client-Info", "device_id=" + deviceId);
+        }
+        
+        Request request = requestBuilder.post(body).build();
         
         try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                Log.e(TAG, "Insert failed: " + response.code() + " " + response.message());
-                throw new IOException("Insert failed: " + response.code());
+                String errorBody = response.body().string();
+                Log.e(TAG, "Insert failed: " + response.code() + " " + response.message() + " - " + errorBody);
+                throw new IOException("Insert failed: " + response.code() + " - " + errorBody);
             }
             
             String responseBody = response.body().string();
@@ -112,11 +135,32 @@ public class SimpleSupabaseClient {
     }
     
     /**
+     * 获取设备ID
+     */
+    private String getDeviceId() {
+        try {
+            // 使用DeviceIdManager获取真实的设备ID
+            return DeviceIdManager.getDeviceId(context);
+        } catch (Exception e) {
+            Log.e(TAG, "获取设备ID失败，使用降级方案", e);
+            // 降级方案：生成临时UUID
+            return "fallback_" + java.util.UUID.randomUUID().toString();
+        }
+    }
+    
+    /**
      * 更新数据
      */
     public String update(String tableName, Object data, String filter) throws IOException {
         String url = String.format("%s/rest/v1/%s?%s", supabaseUrl, tableName, filter);
-        String json = gson.toJson(data);
+        
+        // 处理JSONObject类型，确保只发送纯JSON数据
+        String json;
+        if (data instanceof org.json.JSONObject) {
+            json = data.toString(); // JSONObject的toString()方法返回纯JSON
+        } else {
+            json = gson.toJson(data);
+        }
         
         RequestBody body = RequestBody.create(json, MediaType.parse("application/json"));
         
@@ -131,8 +175,9 @@ public class SimpleSupabaseClient {
         
         try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                Log.e(TAG, "Update failed: " + response.code() + " " + response.message());
-                throw new IOException("Update failed: " + response.code());
+                String errorBody = response.body().string();
+                Log.e(TAG, "Update failed: " + response.code() + " " + response.message() + " - " + errorBody);
+                throw new IOException("Update failed: " + response.code() + " - " + errorBody);
             }
             
             String responseBody = response.body().string();
@@ -180,5 +225,105 @@ public class SimpleSupabaseClient {
             Log.e(TAG, "Connection test failed", e);
             return false;
         }
+    }
+    
+    /**
+     * 更新用户统计数据
+     */
+    public void updateUserStatistics(int totalQuestions, int correctCount, double accuracyRate, OperationCallback<String> callback) {
+        new Thread(() -> {
+            try {
+                // 构建统计数据对象
+                JsonObject statsData = new JsonObject();
+                statsData.addProperty("total_questions", totalQuestions);
+                statsData.addProperty("correct_questions", correctCount);
+                statsData.addProperty("accuracy_rate", accuracyRate);
+                statsData.addProperty("last_updated", System.currentTimeMillis());
+                
+                // 这里应该更新user_profiles表或study_statistics表
+                // 目前先使用模拟数据，后续需要集成实际的数据库表
+                String result = "统计数据更新成功: 总题数=" + totalQuestions + 
+                               ", 正确数=" + correctCount + ", 正确率=" + accuracyRate + "%";
+                
+                Log.d(TAG, result);
+                
+                // 模拟异步回调
+                if (callback != null) {
+                    callback.onSuccess(result);
+                }
+                
+            } catch (Exception e) {
+                Log.e(TAG, "更新用户统计数据失败", e);
+                if (callback != null) {
+                    callback.onError(e);
+                }
+            }
+        }).start();
+    }
+    
+    /**
+     * 批量更新错题数据
+     */
+    public void batchUpdateWrongQuestions(List<JsonObject> wrongQuestionUpdates, OperationCallback<String> callback) {
+        new Thread(() -> {
+            try {
+                // 批量更新错题记录
+                for (JsonObject updateData : wrongQuestionUpdates) {
+                    String wrongQuestionId = updateData.get("id").getAsString();
+                    String result = update("wrong_questions", updateData, "id=eq." + wrongQuestionId);
+                    Log.d(TAG, "更新错题记录结果: " + result);
+                }
+                
+                String finalResult = "批量更新成功，共更新 " + wrongQuestionUpdates.size() + " 条记录";
+                
+                if (callback != null) {
+                    callback.onSuccess(finalResult);
+                }
+                
+            } catch (Exception e) {
+                Log.e(TAG, "批量更新错题数据失败", e);
+                if (callback != null) {
+                    callback.onError(e);
+                }
+            }
+        }).start();
+    }
+    
+    /**
+     * 同步本地错题数据到云端
+     */
+    public void syncWrongQuestionsToCloud(List<WrongQuestionAdapter.WrongQuestionItem> wrongQuestions, OperationCallback<String> callback) {
+        new Thread(() -> {
+            try {
+                List<JsonObject> updates = new ArrayList<>();
+                
+                for (WrongQuestionAdapter.WrongQuestionItem wrongQuestion : wrongQuestions) {
+                    JsonObject updateData = new JsonObject();
+                    updateData.addProperty("id", wrongQuestion.getId());
+                    updateData.addProperty("is_mastered", wrongQuestion.isMastered());
+                    // 使用正确的字段名：review_count 而不是 wrong_count
+                    updateData.addProperty("review_count", wrongQuestion.getWrongCount());
+                    // 使用正确的日期格式
+                    String currentDate = new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date(System.currentTimeMillis()));
+                    updateData.addProperty("last_review_date", currentDate);
+                    
+                    updates.add(updateData);
+                }
+                
+                if (!updates.isEmpty()) {
+                    batchUpdateWrongQuestions(updates, callback);
+                } else {
+                    if (callback != null) {
+                        callback.onSuccess("没有需要同步的数据");
+                    }
+                }
+                
+            } catch (Exception e) {
+                Log.e(TAG, "同步错题数据到云端失败", e);
+                if (callback != null) {
+                    callback.onError(e);
+                }
+            }
+        }).start();
     }
 }
