@@ -54,10 +54,23 @@ public class ProfileFragment extends Fragment {
     private SupabaseClientManager supabaseManager;
     private SupabaseUserProfile currentUser;
     
+    // 下拉刷新组件
+    private androidx.swiperefreshlayout.widget.SwipeRefreshLayout swipeRefreshLayout;
+    
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        
+        // 初始化下拉刷新
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        if (swipeRefreshLayout != null) {
+            // 使用现有的颜色资源，secondary不存在，用accent替代
+            swipeRefreshLayout.setColorSchemeResources(R.color.primary, R.color.accent, R.color.success);
+            swipeRefreshLayout.setOnRefreshListener(this::refreshAllData);
+        }
+        
+        return view;
     }
     
     @Override
@@ -69,6 +82,51 @@ public class ProfileFragment extends Fragment {
         setupClickListeners();
         loadUserData();
         loadStatistics();
+    }
+    
+    /**
+     * 刷新所有数据
+     */
+    private void refreshAllData() {
+        Log.d(TAG, "开始刷新所有数据");
+        
+        // 重置数据
+        currentUser = null;
+        
+        // 重新加载数据
+        loadUserData();
+        loadStatistics();
+        
+        // 延迟停止刷新动画，确保数据加载完成
+        new android.os.Handler().postDelayed(() -> {
+            if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
+                swipeRefreshLayout.setRefreshing(false);
+                Toast.makeText(getContext(), "数据刷新完成", Toast.LENGTH_SHORT).show();
+            }
+        }, 1500);
+    }
+    
+    /**
+     * 显示加载状态
+     */
+    private void showLoadingState() {
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(true);
+        }
+        
+        // 可以在这里显示额外的loading UI
+        Log.d(TAG, "显示加载状态");
+    }
+    
+    /**
+     * 隐藏加载状态
+     */
+    private void hideLoadingState() {
+        if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
+        
+        Log.d(TAG, "隐藏加载状态");
     }
     
     private void initViews(View view) {
@@ -94,14 +152,18 @@ public class ProfileFragment extends Fragment {
         // 学习计划
         studyPlan.setOnClickListener(v -> {
             if (isAdded() && getContext() != null) {
-                Toast.makeText(getContext(), "学习计划功能开发中...", Toast.LENGTH_SHORT).show();
+                // 跳转到学习计划界面
+                Intent intent = new Intent(getActivity(), StudyPlanActivity.class);
+                startActivity(intent);
             }
         });
         
         // 设置
         settings.setOnClickListener(v -> {
             if (isAdded() && getContext() != null) {
-                Toast.makeText(getContext(), "设置功能开发中...", Toast.LENGTH_SHORT).show();
+                // 跳转到设置界面
+                Intent intent = new Intent(getActivity(), SettingsActivity.class);
+                startActivity(intent);
             }
         });
         
@@ -123,7 +185,9 @@ public class ProfileFragment extends Fragment {
         // 用户头像点击
         userAvatar.setOnClickListener(v -> {
             if (isAdded() && getContext() != null) {
-                Toast.makeText(getContext(), "头像设置功能开发中...", Toast.LENGTH_SHORT).show();
+                // 跳转到头像上传界面
+                Intent intent = new Intent(getActivity(), AvatarUploadActivity.class);
+                startActivity(intent);
             }
         });
     }
