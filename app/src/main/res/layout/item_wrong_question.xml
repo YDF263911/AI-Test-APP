@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/ModernCardView.Compact"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginHorizontal="0dp"
     android:layout_marginBottom="12dp"
     android:clickable="true"
     android:focusable="true"
-    android:foreground="?attr/selectableItemBackground">
+    android:foreground="?attr/selectableItemBackground"
+    style="@style/NiukeCardView">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="14dp">
+        android:padding="16dp">
 
         <!-- 题目头部信息 -->
         <LinearLayout
@@ -21,7 +22,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="12dp">
 
             <!-- 学科标签 -->
             <TextView
@@ -29,9 +30,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Java"
-                android:textColor="@color/primary"
-                android:textSize="11sp"
-                android:textStyle="bold" />
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:background="@drawable/bg_badge_niuke_blue"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp" />
 
             <!-- 难度标签 -->
             <TextView
@@ -39,9 +43,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="中等"
-                android:textColor="@color/text_secondary"
-                android:textSize="11sp"
-                android:layout_marginStart="8dp" />
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_badge_niuke_orange"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp" />
 
             <View
                 android:layout_width="0dp"
@@ -54,8 +61,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="未掌握"
-                android:textColor="@color/text_secondary"
-                android:textSize="11sp" />
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:background="@drawable/bg_badge_niuke_blue"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp" />
 
         </LinearLayout>
 
@@ -66,21 +77,22 @@
             android:layout_height="wrap_content"
             android:text="下列哪个是Java的基本数据类型？"
             android:textColor="@color/text_primary"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:maxLines="2"
             android:ellipsize="end"
-            android:lineSpacingExtra="2dp"
-            android:layout_marginBottom="10dp" />
+            android:lineSpacingExtra="4dp"
+            android:layout_marginBottom="12dp"
+            style="@style/NiukeText.Body" />
 
-        <!-- 统计信息 -->
+        <!-- 统计信息和操作区 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
-            <!-- 错误次数 -->
+            <!-- 统计信息 -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -88,48 +100,76 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
 
-                <TextView
-                    android:id="@+id/wrong_count"
+                <!-- 错误次数 -->
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="错误3次"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="11sp"
-                    android:maxLines="1"
-                    android:ellipsize="end" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
-            </LinearLayout>
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_error_outline"
+                        app:tint="@color/text_secondary"
+                        android:layout_marginEnd="4dp" />
 
-            <!-- 最后复习时间 -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginStart="8dp">
+                    <TextView
+                        android:id="@+id/wrong_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="3次"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:letterSpacing="0.01" />
 
-                <TextView
-                    android:id="@+id/last_review_time"
+                </LinearLayout>
+
+                <!-- 最后复习时间 -->
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2天前"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="11sp"
-                    android:maxLines="1"
-                    android:ellipsize="end" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginStart="16dp">
+
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_schedule"
+                        app:tint="@color/text_secondary"
+                        android:layout_marginEnd="4dp" />
+
+                    <TextView
+                        android:id="@+id/last_review_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2天前"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:letterSpacing="0.01" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
             <!-- 操作按钮 -->
-            <ImageView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/action_button"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:src="@drawable/ic_play_arrow"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="3dp"
-                app:tint="@color/primary" />
+                style="@style/NiukeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="复习"
+                android:textSize="12sp"
+                android:minWidth="0dp"
+                android:paddingHorizontal="12dp"
+                app:icon="@drawable/ic_play_arrow"
+                app:iconSize="16dp"
+                app:iconGravity="textStart" />
 
         </LinearLayout>
 

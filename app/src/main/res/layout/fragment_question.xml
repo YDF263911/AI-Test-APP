@@ -327,53 +327,86 @@
     <!-- 底部操作栏 -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_marginBottom="80dp"
         android:layout_marginHorizontal="16dp"
         android:background="@color/transparent"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:orientation="vertical"
+        android:gravity="center">
 
-        <!-- 上一题按钮 -->
+        <!-- 查看解析按钮（仅显示在已答题但未查看解析时） -->
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/previous_button"
+            android:id="@+id/view_analysis_button"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="上一题"
-            android:textSize="16sp"
-            android:layout_marginEnd="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="查看AI智能解析"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp"
             android:textAllCaps="false"
             android:backgroundTint="@color/white"
             android:textColor="@color/primary_blue"
-            app:cornerRadius="12dp"
+            app:cornerRadius="8dp"
             app:strokeColor="@color/primary_blue"
             app:strokeWidth="1dp"
             android:minHeight="0dp"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            android:elevation="2dp" />
+            android:elevation="2dp"
+            android:visibility="gone"
+            android:drawableStart="@drawable/ic_ai_analysis"
+            android:drawablePadding="8dp"
+            android:drawableTint="@color/primary_blue" />
 
-        <!-- 下一题按钮 -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/next_button"
-            style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="下一题"
-            android:textSize="16sp"
-            android:layout_marginStart="8dp"
-            android:textAllCaps="false"
-            android:backgroundTint="@color/primary_blue"
-            android:textColor="@color/white"
-            app:cornerRadius="12dp"
-            android:minHeight="0dp"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            android:elevation="2dp" />
+        <!-- 操作按钮区域 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <!-- 上一题按钮 -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/previous_button"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="上一题"
+                android:textSize="16sp"
+                android:layout_marginEnd="8dp"
+                android:textAllCaps="false"
+                android:backgroundTint="@color/white"
+                android:textColor="@color/primary_blue"
+                app:cornerRadius="12dp"
+                app:strokeColor="@color/primary_blue"
+                app:strokeWidth="1dp"
+                android:minHeight="0dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:elevation="2dp" />
+
+            <!-- 下一题按钮 -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/next_button"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="下一题"
+                android:textSize="16sp"
+                android:layout_marginStart="8dp"
+                android:textAllCaps="false"
+                android:backgroundTint="@color/primary_blue"
+                android:textColor="@color/white"
+                app:cornerRadius="12dp"
+                android:minHeight="0dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:elevation="2dp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

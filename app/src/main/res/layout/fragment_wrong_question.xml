@@ -5,64 +5,62 @@
     android:layout_height="match_parent"
     android:background="@color/bg_secondary">
 
-    <!-- 渐变背景 -->
-    <View
+    <!-- 顶部渐变背景 -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:background="@drawable/bg_gradient_blue" />
+        android:background="@drawable/bg_gradient_niuke"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingTop="60dp">
+        
+        <!-- 标题区域 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="错题本"
+            android:textColor="@color/white"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+            
+        <!-- 副标题 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="温故知新，查漏补缺"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:alpha="0.9" />
+    </LinearLayout>
 
+    <!-- 下方内容区域 -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="150dp"
         android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="80dp">
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="100dp">
 
-            <!-- 标题区域 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center_horizontal"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="错题本"
-                    android:textColor="@color/text_on_primary"
-                    android:textSize="26sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="温故知新，查漏补缺"
-                    android:textColor="@color/text_on_secondary"
-                    android:textSize="13sp"
-                    android:layout_marginTop="4dp" />
-
-            </LinearLayout>
-
-            <!-- 统计卡片 -->
+            <!-- 统计信息卡片 -->
             <com.google.android.material.card.MaterialCardView
-                style="@style/ModernCardView.Compact"
+                style="@style/NiukeCardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginBottom="16dp"
-                app:cardElevation="4dp">
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="24dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingVertical="16dp">
+                    android:padding="24dp">
 
                     <!-- 错题总数 -->
                     <LinearLayout
@@ -77,8 +75,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="24"
-                            android:textColor="@color/text_primary"
-                            android:textSize="22sp"
+                            android:textColor="@color/primary_blue"
+                            android:textSize="24sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -86,16 +84,16 @@
                             android:layout_height="wrap_content"
                             android:text="错题总数"
                             android:textColor="@color/text_secondary"
-                            android:textSize="11sp"
-                            android:layout_marginTop="4dp" />
+                            android:textSize="12sp"
+                            android:layout_marginTop="6dp" />
                     </LinearLayout>
 
                     <!-- 分隔线 -->
                     <View
                         android:layout_width="1dp"
-                        android:layout_height="50dp"
-                        android:layout_marginHorizontal="12dp"
-                        android:background="@color/divider" />
+                        android:layout_height="60dp"
+                        android:layout_marginHorizontal="16dp"
+                        android:background="@color/divider_light" />
 
                     <!-- 已掌握 -->
                     <LinearLayout
@@ -110,8 +108,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="12"
-                            android:textColor="@color/text_primary"
-                            android:textSize="22sp"
+                            android:textColor="@color/success_green"
+                            android:textSize="24sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -119,16 +117,16 @@
                             android:layout_height="wrap_content"
                             android:text="已掌握"
                             android:textColor="@color/text_secondary"
-                            android:textSize="11sp"
-                            android:layout_marginTop="4dp" />
+                            android:textSize="12sp"
+                            android:layout_marginTop="6dp" />
                     </LinearLayout>
 
                     <!-- 分隔线 -->
                     <View
                         android:layout_width="1dp"
-                        android:layout_height="50dp"
-                        android:layout_marginHorizontal="12dp"
-                        android:background="@color/divider" />
+                        android:layout_height="60dp"
+                        android:layout_marginHorizontal="16dp"
+                        android:background="@color/divider_light" />
 
                     <!-- 复习进度 -->
                     <LinearLayout
@@ -143,8 +141,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="50%"
-                            android:textColor="@color/text_primary"
-                            android:textSize="22sp"
+                            android:textColor="@color/primary_blue"
+                            android:textSize="24sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -152,56 +150,160 @@
                             android:layout_height="wrap_content"
                             android:text="复习进度"
                             android:textColor="@color/text_secondary"
-                            android:textSize="11sp"
-                            android:layout_marginTop="4dp" />
+                            android:textSize="12sp"
+                            android:layout_marginTop="6dp" />
                     </LinearLayout>
 
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- 筛选和操作栏 -->
+            <!-- 搜索和筛选栏 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:paddingHorizontal="16dp"
-                android:layout_marginBottom="16dp">
+                android:orientation="vertical"
+                android:layout_marginBottom="20dp">
 
-                <!-- 筛选下拉框 -->
+                <!-- 搜索框 -->
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="0dp"
-                    android:layout_height="52dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="12dp"
-                    app:boxStrokeColor="@color/primary"
-                    app:hintTextColor="@color/primary">
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginBottom="12dp"
+                    app:boxStrokeColor="@color/primary_blue"
+                    app:hintTextColor="@color/primary_blue"
+                    app:startIconDrawable="@drawable/ic_search"
+                    app:startIconTint="@color/primary_blue">
 
-                    <AutoCompleteTextView
-                        android:id="@+id/filter_spinner"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/search_input"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="none"
-                        android:hint="筛选条件"
-                        android:text="全部错题" />
+                        android:hint="搜索错题内容..."
+                        android:textSize="14sp"
+                        android:maxLines="1"
+                        android:imeOptions="actionSearch" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- 清除已掌握按钮 -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/clear_mastered"
-                    style="@style/ModernButton.Secondary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="52dp"
-                    android:textSize="14sp"
-                    android:text="清除已掌握"
-                    android:minWidth="100dp"
-                    app:icon="@drawable/ic_delete_outline"
-                    app:iconGravity="textStart" />
+                <!-- 筛选和操作栏 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                        <!-- 筛选下拉框 -->
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="12dp"
+                            app:boxStrokeColor="@color/primary_blue"
+                            app:hintTextColor="@color/primary_blue"
+                            app:startIconDrawable="@drawable/ic_filter_list"
+                            app:startIconTint="@color/primary_blue">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/filter_spinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:hint="筛选条件"
+                            android:text="全部错题"
+                            android:textSize="14sp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- 排序按钮 -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/sort_button"
+                        style="@style/NiukeButton.Outline"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="8dp"
+                        app:icon="@drawable/ic_sort"
+                        app:iconSize="20dp" />
+
+                    <!-- 批量操作按钮 -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/batch_button"
+                        style="@style/NiukeButton.Outline"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="8dp"
+                        app:icon="@drawable/ic_select_all"
+                        app:iconSize="20dp" />
+
+                    <!-- 清除已掌握按钮 -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/clear_mastered"
+                        style="@style/NiukeButton.Outline"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:icon="@drawable/ic_clear"
+                        app:iconSize="20dp" />
+
+                </LinearLayout>
 
             </LinearLayout>
+
+            <!-- 复习提醒设置 -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/NiukeCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="复习提醒"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/reminder_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="每日提醒已关闭"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp"
+                            android:layout_marginTop="2dp" />
+
+                    </LinearLayout>
+
+                    <!-- 提醒设置按钮 -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/set_reminder_button"
+                        style="@style/NiukeButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:text="设置"
+                        android:textSize="12sp"
+                        app:icon="@drawable/ic_notifications"
+                        app:iconGravity="textStart"
+                        app:iconSize="16dp" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- 错题列表 -->
             <androidx.recyclerview.widget.RecyclerView
@@ -213,71 +315,60 @@
                 android:paddingBottom="16dp"
                 android:nestedScrollingEnabled="false" />
 
-        </LinearLayout>
-
-    </androidx.core.widget.NestedScrollView>
-
-    <!-- 空状态提示 -->
-    <LinearLayout
-        android:id="@+id/empty_state"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:visibility="gone"
-        android:padding="32dp">
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            app:cardCornerRadius="60dp"
-            app:cardElevation="8dp">
-
+            <!-- 空状态提示（放在错题列表位置） -->
             <LinearLayout
+                android:id="@+id/empty_state"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:background="@drawable/bg_gradient_blue">
+                android:visibility="gone"
+                android:layout_marginTop="40dp"
+                android:paddingHorizontal="32dp"
+                android:paddingBottom="40dp">
 
+                <!-- 简约小图标 -->
                 <ImageView
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/ic_celebration"
-                    app:tint="@color/text_on_primary" />
+                    android:src="@drawable/ic_check_circle"
+                    android:tint="@color/success_green"
+                    android:alpha="0.6" />
+
+                <!-- 简洁的文字提示 -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="暂无错题"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="保持全对，继续加油"
+                    android:textColor="@color/text_hint"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- 小型引导按钮 -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_start_practice"
+                    style="@style/ModernButton.Text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:text="继续刷题"
+                    android:textSize="11sp"
+                    app:icon="@drawable/ic_arrow_forward"
+                    app:iconSize="14dp" />
 
             </LinearLayout>
 
-        </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="太棒了！暂无错题"
-            android:textColor="@color/text_primary"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="保持全对，继续加油！"
-            android:textColor="@color/text_secondary"
-            android:textSize="14sp"
-            android:layout_marginBottom="16dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_start_practice"
-            style="@style/ModernButton"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:text="开始刷题"
-            app:icon="@drawable/ic_play_arrow"
-            app:iconGravity="textEnd" />
-
-    </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <!-- 悬浮操作按钮 -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton

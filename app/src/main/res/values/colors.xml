@@ -122,4 +122,7 @@
     <color name="chart_negative">#F44336</color>
     <color name="chart_neutral">#FF9800</color>
     <color name="chart_background">#F5F5F5</color>
+    
+    <!-- 卡片边框颜色 -->
+    <color name="card_stroke">#E0E0E0</color>
 </resources>

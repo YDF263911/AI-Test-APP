@@ -101,4 +101,30 @@
         <item name="strokeWidth">2dp</item>
     </style>
     
+    <!-- Modern CardView 样式 - 仅保留themes.xml中不存在的样式 -->
+    <style name="ModernCardView.Elevated" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">6dp</item>
+        <item name="cardBackgroundColor">@color/white</item>
+        <item name="strokeColor">@color/primary_light</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+    
+    <!-- Modern Button 样式 - 仅保留themes.xml中不存在的样式 -->
+    <style name="ModernButton.Outlined" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeColor">@color/primary</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="android:textColor">@color/primary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:padding">12dp</item>
+    </style>
+    
+    <style name="ModernButton.Text" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="cornerRadius">6dp</item>
+        <item name="android:textColor">@color/primary</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:padding">8dp</item>
+    </style>
+    
 </resources>
