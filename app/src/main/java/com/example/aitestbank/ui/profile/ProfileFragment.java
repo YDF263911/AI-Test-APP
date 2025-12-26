@@ -1,5 +1,6 @@
 package com.example.aitestbank.ui.profile;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +20,9 @@ import com.example.aitestbank.model.SupabaseUserProfile;
 import com.example.aitestbank.model.SupabaseWrongQuestion;
 import com.example.aitestbank.supabase.SupabaseClientManager;
 import com.example.aitestbank.supabase.SupabaseClientManager.OperationCallback;
+import com.example.aitestbank.supabase.auth.AuthManager;
+import com.example.aitestbank.MainActivity;
+import com.example.aitestbank.ui.auth.LoginActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -43,6 +47,7 @@ public class ProfileFragment extends Fragment {
     private LinearLayout studyPlan;
     private LinearLayout settings;
     private LinearLayout clearCache;
+    private LinearLayout logout;
     private LinearLayout about;
     
     // 数据和客户端
@@ -76,6 +81,7 @@ public class ProfileFragment extends Fragment {
         studyPlan = view.findViewById(R.id.study_plan);
         settings = view.findViewById(R.id.settings);
         clearCache = view.findViewById(R.id.clear_cache);
+        logout = view.findViewById(R.id.logout);
         about = view.findViewById(R.id.about);
     }
     
@@ -104,6 +110,11 @@ public class ProfileFragment extends Fragment {
             clearAppCache();
         });
         
+        // 退出登录
+        logout.setOnClickListener(v -> {
+            showLogoutDialog();
+        });
+        
         // 关于我们
         about.setOnClickListener(v -> {
             showAboutDialog();
@@ -117,12 +128,55 @@ public class ProfileFragment extends Fragment {
         });
     }
     
+    /**
+     * 显示退出登录确认对话框
+     */
+    private void showLogoutDialog() {
+        if (isAdded() && getContext() != null) {
+            new android.app.AlertDialog.Builder(requireContext())
+                .setTitle("退出登录")
+                .setMessage("确定要退出登录吗？退出后需要重新登录才能使用完整功能。")
+                .setPositiveButton("退出", (dialog, which) -> {
+                    performLogout();
+                })
+                .setNegativeButton("取消", null)
+                .show();
+        }
+    }
+    
+    /**
+     * 执行退出登录操作
+     */
+    private void performLogout() {
+        AuthManager authManager = AuthManager.getInstance(requireContext());
+        authManager.signOut();
+        
+        Toast.makeText(getContext(), "已退出登录", Toast.LENGTH_SHORT).show();
+        
+        // 跳转到登录页面
+        Intent intent = new Intent(requireContext(), LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        
+        // 关闭MainActivity
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
+    }
+    
     private void loadUserData() {
-        // 获取设备ID作为用户标识
-        String deviceId = getDeviceId();
+        // 使用AuthManager获取用户信息
+        AuthManager authManager = AuthManager.getInstance(requireContext());
+        String userId = authManager.getCurrentUserId();
+        String username = authManager.getCurrentUsername();
+        
+        // 显示用户信息
+        if (userName != null) {
+            userName.setText(username != null ? username : "AI刷题用户");
+        }
         
         // 从Supabase user_profiles表获取用户数据
-        supabaseManager.getUserProfile(deviceId, new OperationCallback<String>() {
+        supabaseManager.getUserProfile(userId, new OperationCallback<String>() {
             @Override
             public void onSuccess(String userProfileJson) {
                 // 解析JSON为SupabaseUserProfile对象
@@ -132,7 +186,7 @@ public class ProfileFragment extends Fragment {
                     Log.i(TAG, "用户档案加载成功: " + currentUser.getDisplayName());
                 } catch (Exception e) {
                     Log.e(TAG, "用户档案解析失败", e);
-                    currentUser = createDefaultUserProfile(deviceId);
+                    currentUser = createDefaultUserProfile(userId);
                     updateUserInfo(currentUser);
                 }
             }
@@ -141,7 +195,7 @@ public class ProfileFragment extends Fragment {
             public void onError(Exception error) {
                 Log.e(TAG, "用户档案加载失败", error);
                 // 使用默认用户信息
-                currentUser = createDefaultUserProfile(deviceId);
+                currentUser = createDefaultUserProfile(userId);
                 updateUserInfo(currentUser);
             }
         });

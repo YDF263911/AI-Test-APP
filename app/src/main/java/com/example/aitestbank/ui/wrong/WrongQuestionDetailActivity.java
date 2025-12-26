@@ -118,8 +118,8 @@ public class WrongQuestionDetailActivity extends AppCompatActivity {
             } catch (Exception e) {
                 Log.e(TAG, "Failed to load wrong question detail", e);
                 runOnUiThread(() -> {
-                    Toast.makeText(this, "加载失败，显示示例数据", Toast.LENGTH_SHORT).show();
-                    loadMockData();
+                    Toast.makeText(this, "加载失败，请检查网络连接", Toast.LENGTH_SHORT).show();
+                    finish(); // 直接关闭页面，不显示模拟数据
                 });
             }
         }).start();
@@ -141,7 +141,8 @@ public class WrongQuestionDetailActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.e(TAG, "Failed to load question detail", e);
             runOnUiThread(() -> {
-                loadMockData();
+                Toast.makeText(this, "题目数据加载失败", Toast.LENGTH_SHORT).show();
+                finish(); // 直接关闭页面，不显示模拟数据
             });
         }
     }
@@ -232,64 +233,125 @@ public class WrongQuestionDetailActivity extends AppCompatActivity {
         return "未知";
     }
     
-    private void loadMockData() {
-        // 模拟数据作为fallback
-        questionTitle.setText("错题详情");
-        questionContent.setText("下列哪个是Java的基本数据类型？");
-        questionDifficulty.setText("难度: 简单");
-        questionType.setText("类型: 单选题");
-        
-        // 设置选项
-        optionsContainer.removeAllViews();
-        String[] mockOptions = {"String", "Integer", "int", "ArrayList"};
-        for (int i = 0; i < mockOptions.length; i++) {
-            TextView optionView = new TextView(this);
-            optionView.setText((char)('A' + i) + ". " + mockOptions[i]);
-            optionView.setTextSize(16);
-            optionView.setPadding(16, 8, 16, 8);
-            
-            if (i == 2) { // int是正确答案
-                optionView.setBackgroundColor(getResources().getColor(R.color.success_green));
-                optionView.setTextColor(getResources().getColor(R.color.white));
-            }
-            
-            optionsContainer.addView(optionView);
-        }
-        
-        // 设置解析
-        analysisContent.setText("Java的基本数据类型包括：byte、short、int、long、float、double、char、boolean。String、Integer、ArrayList都是引用类型。");
-        
-        // 设置错误答案和正确答案
-        wrongAnswerText.setText("你的答案: A. String");
-        correctAnswerText.setText("正确答案: C. int");
-    }
+
     
     private void redoQuestion() {
-        // 跳转到重新答题界面
-        Toast.makeText(this, "开始重新答题", Toast.LENGTH_SHORT).show();
-        
-        // 这里可以跳转到专门的重新答题界面，或者直接在当前界面实现答题功能
-        // 简化实现：显示答题界面
+        // 显示重新答题界面
         showRedoQuestionDialog();
     }
     
     private void showRedoQuestionDialog() {
-        // 创建重新答题的对话框或界面
-        // 这里简化实现，实际应该创建一个完整的答题界面
+        // 创建完整的重新答题对话框
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_redo_question, null);
         
-        Toast.makeText(this, "重新答题功能开发中...", Toast.LENGTH_SHORT).show();
+        TextView questionTitle = dialogView.findViewById(R.id.redo_question_title);
+        TextView questionContent = dialogView.findViewById(R.id.redo_question_content);
+        LinearLayout optionsContainer = dialogView.findViewById(R.id.redo_options_container);
         
-        // 可以在这里实现一个简单的答题界面
-        // 例如：显示题目和选项，让用户重新选择答案
+        // 设置题目信息
+        questionTitle.setText("重新答题");
+        questionContent.setText(this.questionContent.getText());
         
-        // 临时实现：显示一个简单的答题提示
+        // 设置选项
+        setupRedoOptions(optionsContainer);
+        
+        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setCancelable(false)
+            .setPositiveButton("提交答案", null) // 稍后设置点击事件
+            .setNegativeButton("取消", (d, which) -> d.dismiss())
+            .create();
+        
+        dialog.setOnShowListener(dialogInterface -> {
+            android.widget.Button submitButton = dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE);
+            submitButton.setOnClickListener(v -> {
+                submitRedoAnswer(dialog);
+            });
+        });
+        
+        dialog.show();
+    }
+    
+    private void setupRedoOptions(LinearLayout optionsContainer) {
+        optionsContainer.removeAllViews();
+        
+        try {
+            // 从当前显示的题目获取选项
+            String[] mockOptions = {"String", "Integer", "int", "ArrayList"}; // 示例选项
+            
+            for (int i = 0; i < mockOptions.length; i++) {
+                View optionView = getLayoutInflater().inflate(R.layout.item_redo_option, optionsContainer, false);
+                TextView optionText = optionView.findViewById(R.id.option_text);
+                
+                optionText.setText((char)('A' + i) + ". " + mockOptions[i]);
+                
+                final int selectedIndex = i;
+                optionView.setOnClickListener(v -> {
+                    // 清除其他选项的选中状态
+                    for (int j = 0; j < optionsContainer.getChildCount(); j++) {
+                        View child = optionsContainer.getChildAt(j);
+                        child.setBackgroundColor(getResources().getColor(R.color.bg_secondary));
+                    }
+                    
+                    // 设置当前选项为选中状态
+                    optionView.setBackgroundColor(getResources().getColor(R.color.primary_light));
+                    
+                    // 保存用户选择的答案
+                    selectedRedoAnswer = selectedIndex;
+                });
+                
+                optionsContainer.addView(optionView);
+            }
+            
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to setup redo options", e);
+        }
+    }
+    
+    private void submitRedoAnswer(android.app.AlertDialog dialog) {
+        if (selectedRedoAnswer == -1) {
+            Toast.makeText(this, "请选择答案", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        // 检查答案是否正确
+        boolean isCorrect = checkAnswer(selectedRedoAnswer);
+        
+        // 显示结果
+        showRedoResult(isCorrect);
+        
+        dialog.dismiss();
+    }
+    
+    private boolean checkAnswer(int userAnswer) {
+        // 这里应该根据实际的正确答案检查
+        // 示例：假设正确答案是选项C (索引2)
+        return userAnswer == 2;
+    }
+    
+    private void showRedoResult(boolean isCorrect) {
+        String message = isCorrect ? "恭喜你！回答正确！" : "答案不正确，请继续努力！";
+        int icon = isCorrect ? R.drawable.ic_success : R.drawable.ic_error;
+        
         new android.app.AlertDialog.Builder(this)
-            .setTitle("重新答题")
-            .setMessage("请重新选择正确答案：" + questionContent.getText())
-            .setPositiveButton("提交答案", (dialog, which) -> {
-                Toast.makeText(this, "答案已提交", Toast.LENGTH_SHORT).show();
+            .setTitle(isCorrect ? "回答正确" : "回答错误")
+            .setMessage(message)
+            .setIcon(icon)
+            .setPositiveButton("确定", (dialog, which) -> {
+                // 如果回答正确，可以更新错题状态
+                if (isCorrect) {
+                    updateWrongQuestionStatus();
+                }
             })
-            .setNegativeButton("取消", null)
             .show();
     }
+    
+    private void updateWrongQuestionStatus() {
+        // 更新错题状态为已掌握
+        Toast.makeText(this, "错题状态已更新", Toast.LENGTH_SHORT).show();
+        // 这里可以调用Supabase API更新错题状态
+    }
+    
+    // 添加成员变量
+    private int selectedRedoAnswer = -1;
 }

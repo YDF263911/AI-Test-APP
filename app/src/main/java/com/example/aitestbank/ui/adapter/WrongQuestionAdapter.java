@@ -4,7 +4,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+import com.google.android.material.button.MaterialButton;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -60,35 +62,43 @@ public class WrongQuestionAdapter extends RecyclerView.Adapter<WrongQuestionAdap
         private TextView questionPreview;
         private TextView wrongCount;
         private TextView lastWrongDate;
-        // private TextView knowledgePoint;
-        // private ImageButton deleteButton;
-        // private View masteredButton;
-        // private View notMasteredButton;
+        private TextView masteryStatusText;
+        private TextView subjectText;
+        private TextView difficultyText;
+        private MaterialButton actionButton;
+        private View itemView;
 
         public WrongQuestionViewHolder(@NonNull View itemView) {
             super(itemView);
+            this.itemView = itemView;
             questionPreview = itemView.findViewById(R.id.question_preview);
             wrongCount = itemView.findViewById(R.id.wrong_count);
             lastWrongDate = itemView.findViewById(R.id.last_review_time);
-            // knowledgePoint = itemView.findViewById(R.id.knowledge_point);
-            // deleteButton = itemView.findViewById(R.id.delete_button);
-            // masteredButton = itemView.findViewById(R.id.mastered_button);
-            // notMasteredButton = itemView.findViewById(R.id.not_mastered_button);
+            masteryStatusText = itemView.findViewById(R.id.mastery_status_text);
+            subjectText = itemView.findViewById(R.id.subject_text);
+            difficultyText = itemView.findViewById(R.id.difficulty_text);
+            actionButton = itemView.findViewById(R.id.action_button);
         }
 
         public void bind(WrongQuestionItem wrongQuestion) {
             questionPreview.setText(wrongQuestion.getQuestionPreview());
-            wrongCount.setText("错误次数: " + wrongQuestion.getWrongCount());
-            lastWrongDate.setText("最近错误: " + wrongQuestion.getLastWrongDate());
-            // knowledgePoint.setText("考点: " + wrongQuestion.getKnowledgePoint());
-
-            // if (wrongQuestion.isMastered()) {
-            //     masteredButton.setVisibility(View.VISIBLE);
-            //     notMasteredButton.setVisibility(View.GONE);
-            // } else {
-            //     masteredButton.setVisibility(View.GONE);
-            //     notMasteredButton.setVisibility(View.VISIBLE);
-            // }
+            wrongCount.setText("错误" + wrongQuestion.getWrongCount() + "次");
+            lastWrongDate.setText(formatLastWrongDate(wrongQuestion.getLastWrongDate()));
+            
+            // 设置掌握状态
+            if (wrongQuestion.isMastered()) {
+                masteryStatusText.setText("已掌握");
+                masteryStatusText.setTextColor(itemView.getContext().getColor(R.color.success_green));
+                itemView.setAlpha(0.7f);
+            } else {
+                masteryStatusText.setText("未掌握");
+                masteryStatusText.setTextColor(itemView.getContext().getColor(R.color.text_secondary));
+                itemView.setAlpha(1f);
+            }
+            
+            // 设置学科和难度
+            subjectText.setText(wrongQuestion.getKnowledgePoint());
+            difficultyText.setText(getDifficultyText(wrongQuestion.getDifficulty()));
 
             itemView.setOnClickListener(v -> {
                 if (onWrongQuestionClickListener != null) {
@@ -96,23 +106,37 @@ public class WrongQuestionAdapter extends RecyclerView.Adapter<WrongQuestionAdap
                 }
             });
 
-            // 删除按钮点击事件
-            // if (deleteButton != null) {
-            //     deleteButton.setOnClickListener(v -> {
-            //         if (onWrongQuestionClickListener != null) {
-            //             onWrongQuestionClickListener.onDeleteWrongQuestion(wrongQuestion);
-            //         }
-            //     });
-            // }
+            // 长按删除功能
+            itemView.setOnLongClickListener(v -> {
+                if (onWrongQuestionClickListener != null) {
+                    onWrongQuestionClickListener.onDeleteWrongQuestion(wrongQuestion);
+                    return true;
+                }
+                return false;
+            });
 
-            // 已掌握按钮点击事件
-            // if (masteredButton != null) {
-            //     masteredButton.setOnClickListener(v -> {
-            //         if (onWrongQuestionClickListener != null) {
-            //             onWrongQuestionClickListener.onMarkMastered(wrongQuestion);
-            //         }
-            //     });
-            // }
+            // 操作按钮点击事件（切换掌握状态）
+            actionButton.setOnClickListener(v -> {
+                if (onWrongQuestionClickListener != null) {
+                    onWrongQuestionClickListener.onMarkMastered(wrongQuestion);
+                }
+            });
+        }
+        
+        private String formatLastWrongDate(String date) {
+            // 简化处理，实际应该根据时间差显示"今天"、"昨天"、"X天前"等
+            return date;
+        }
+        
+        private String getDifficultyText(int difficulty) {
+            switch (difficulty) {
+                case 1: return "简单";
+                case 2: return "较易";
+                case 3: return "中等";
+                case 4: return "较难";
+                case 5: return "困难";
+                default: return "中等";
+            }
         }
     }
     
@@ -126,6 +150,7 @@ public class WrongQuestionAdapter extends RecyclerView.Adapter<WrongQuestionAdap
         private String lastWrongDate;
         private String knowledgePoint;
         private boolean isMastered;
+        private int difficulty;
         
         public WrongQuestionItem(String id, String questionPreview, int wrongCount, 
                                 String lastWrongDate, String knowledgePoint, boolean isMastered) {
@@ -135,6 +160,18 @@ public class WrongQuestionAdapter extends RecyclerView.Adapter<WrongQuestionAdap
             this.lastWrongDate = lastWrongDate;
             this.knowledgePoint = knowledgePoint;
             this.isMastered = isMastered;
+            this.difficulty = 3; // 默认中等难度
+        }
+        
+        public WrongQuestionItem(String id, String questionPreview, int wrongCount, 
+                                String lastWrongDate, String knowledgePoint, boolean isMastered, int difficulty) {
+            this.id = id;
+            this.questionPreview = questionPreview;
+            this.wrongCount = wrongCount;
+            this.lastWrongDate = lastWrongDate;
+            this.knowledgePoint = knowledgePoint;
+            this.isMastered = isMastered;
+            this.difficulty = difficulty;
         }
         
         // Getters and Setters
@@ -144,6 +181,8 @@ public class WrongQuestionAdapter extends RecyclerView.Adapter<WrongQuestionAdap
         public String getLastWrongDate() { return lastWrongDate; }
         public String getKnowledgePoint() { return knowledgePoint; }
         public boolean isMastered() { return isMastered; }
+        public int getDifficulty() { return difficulty; }
         public void setMastered(boolean mastered) { isMastered = mastered; }
+        public void setDifficulty(int difficulty) { this.difficulty = difficulty; }
     }
 }

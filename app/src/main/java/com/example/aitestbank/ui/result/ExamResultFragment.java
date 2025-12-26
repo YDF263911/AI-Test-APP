@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +39,7 @@ public class ExamResultFragment extends Fragment {
     
     private List<Question> questions;
     private List<Boolean> userAnswers;
+    private List<Integer> userAnswerIndexes;
     private AnswerCardAdapter answerCardAdapter;
     
     @Nullable
@@ -81,16 +84,21 @@ public class ExamResultFragment extends Fragment {
                 
                 if (answers != null && !answers.isEmpty()) {
                     userAnswers = new ArrayList<>();
+                    userAnswerIndexes = new ArrayList<>();
                     for (Integer answer : answers) {
                         // 简化逻辑：如果答案是-1表示未答，其他表示已答
                         // 为了演示，我们假设奇数答案为正确
+                        userAnswerIndexes.add(answer);
                         userAnswers.add(answer != -1 && answer % 2 == 1);
                     }
                 } else {
                     // 如果没有答案数据，生成默认数据
                     userAnswers = new ArrayList<>();
+                    userAnswerIndexes = new ArrayList<>();
                     if (questions != null) {
                         for (int i = 0; i < questions.size(); i++) {
+                            int simulatedAnswer = i % 4; // 模拟选择A、B、C、D
+                            userAnswerIndexes.add(simulatedAnswer);
                             userAnswers.add(i % 3 == 0); // 模拟：每3题答对1题
                         }
                     }
@@ -172,29 +180,39 @@ public class ExamResultFragment extends Fragment {
         wrongCountText.setText(String.valueOf(wrongCount));
         totalCountText.setText(String.valueOf(totalQuestions));
         scoreText.setText(score + "分");
-        timeText.setText("用时：" + (int)(Math.random() * 10 + 5) + "分钟"); // 模拟用时
+        // 计算真实用时
+        long startTime = getArguments() != null ? getArguments().getLong("start_time", 0) : 0;
+        long endTime = getArguments() != null ? getArguments().getLong("end_time", 0) : 0;
+        if (startTime > 0 && endTime > 0) {
+            long durationMs = endTime - startTime;
+            int minutes = (int) (durationMs / (1000 * 60));
+            int seconds = (int) ((durationMs % (1000 * 60)) / 1000);
+            timeText.setText(String.format("用时：%d分%d秒", minutes, seconds));
+        } else {
+            timeText.setText("用时：未知");
+        }
     }
     
     private void setupClickListeners() {
         backButton.setOnClickListener(v -> {
             if (getActivity() != null) {
-                getActivity().onBackPressed();
+                getActivity().finish();
             }
         });
         
         analyzeButton.setOnClickListener(v -> {
             if (isAdded() && getContext() != null) {
-                Toast.makeText(getContext(), "正在生成详细分析...", Toast.LENGTH_SHORT).show();
-                // TODO: 跳转到详细分析页面
+                showDetailedAnalysis();
             }
         });
         
         // 答题卡点击事件
-        answerCardAdapter.setOnItemClickListener((position, question, isCorrect) -> {
+        answerCardAdapter.setOnItemClickListener((position, question, isCorrectFromAdapter) -> {
             if (isAdded() && getContext() != null) {
                 // 跳转到题目详情页面
-                Integer userAnswer = position < userAnswers.size() ? userAnswers.get(position) : null;
-                showQuestionDetail(question, position, userAnswer);
+                Integer userAnswerIndex = position < userAnswerIndexes.size() ? userAnswerIndexes.get(position) : null;
+                Boolean isCorrect = position < userAnswers.size() ? userAnswers.get(position) : null;
+                showQuestionDetail(question, position, userAnswerIndex, isCorrect);
             }
         });
     }
@@ -202,7 +220,7 @@ public class ExamResultFragment extends Fragment {
     /**
      * 显示题目详情
      */
-    private void showQuestionDetail(Question question, int position, Integer userAnswer) {
+    private void showQuestionDetail(Question question, int position, Integer userAnswerIndex, Boolean isCorrect) {
         // 创建题目详情Dialog
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
         builder.setTitle("题目详情 - 第" + (position + 1) + "题");
@@ -229,7 +247,7 @@ public class ExamResultFragment extends Fragment {
                 String optionText = String.valueOf(optionChar) + ". " + options.get(i);
                 
                 // 根据用户答案和正确答案设置颜色
-                if (userAnswer != null && userAnswer == i) {
+                if (userAnswerIndex != null && userAnswerIndex == i) {
                     // 用户选择了这个选项
                     if (question.getCorrectAnswer() != null && question.getCorrectAnswer() == i) {
                         optionView.setTextColor(getContext().getResources().getColor(R.color.success_green));
@@ -258,7 +276,7 @@ public class ExamResultFragment extends Fragment {
         String analysis = question.getAnalysis();
         if (analysis == null || analysis.trim().isEmpty()) {
             // 如果没有解析，调用AI生成
-            analysis = generateAIAnalysis(question, userAnswer);
+            analysis = generateAIAnalysis(question, userAnswerIndex);
         }
         
         analysisView.setText("\n📝 解析：\n" + analysis);
@@ -341,5 +359,187 @@ public class ExamResultFragment extends Fragment {
         if (difficulty <= 3) return "中等";
         if (difficulty <= 4) return "困难";
         return "专家级";
+    }
+    
+    /**
+     * 显示详细分析页面
+     */
+    private void showDetailedAnalysis() {
+        if (questions == null || questions.isEmpty()) {
+            Toast.makeText(getContext(), "暂无题目数据", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        // 创建详细分析对话框
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
+        builder.setTitle("详细解析 - 共" + questions.size() + "题");
+        
+        // 创建滚动视图
+        ScrollView scrollView = new ScrollView(getContext());
+        LinearLayout mainLayout = new LinearLayout(getContext());
+        mainLayout.setOrientation(LinearLayout.VERTICAL);
+        mainLayout.setPadding(32, 24, 32, 24);
+        
+        // 添加总体统计信息
+        addOverallStats(mainLayout);
+        
+        // 添加分隔线
+        View divider = new View(getContext());
+        divider.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 2));
+        divider.setBackgroundColor(getContext().getResources().getColor(R.color.divider));
+        mainLayout.addView(divider);
+        
+        // 为每个题目添加解析
+        for (int i = 0; i < questions.size(); i++) {
+            Question question = questions.get(i);
+            Boolean isCorrect = i < userAnswers.size() ? userAnswers.get(i) : false;
+            Integer userAnswerIndex = i < userAnswerIndexes.size() ? userAnswerIndexes.get(i) : null;
+            
+            addQuestionAnalysis(mainLayout, question, i + 1, isCorrect, userAnswerIndex);
+            
+            // 添加题目间分隔线（最后一个不加）
+            if (i < questions.size() - 1) {
+                View questionDivider = new View(getContext());
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 1);
+                params.setMargins(0, 16, 0, 16);
+                questionDivider.setLayoutParams(params);
+                questionDivider.setBackgroundColor(getContext().getResources().getColor(R.color.divider_light));
+                mainLayout.addView(questionDivider);
+            }
+        }
+        
+        scrollView.addView(mainLayout);
+        builder.setView(scrollView);
+        
+        // 添加关闭按钮
+        builder.setPositiveButton("关闭", (dialog, which) -> dialog.dismiss());
+        
+        // 显示对话框
+        builder.show();
+    }
+    
+    /**
+     * 添加总体统计信息
+     */
+    private void addOverallStats(LinearLayout parent) {
+        int totalQuestions = questions.size();
+        int correctCount = 0;
+        int wrongCount = 0;
+        
+        for (Boolean answer : userAnswers) {
+            if (answer != null && answer) {
+                correctCount++;
+            } else {
+                wrongCount++;
+            }
+        }
+        
+        double accuracy = totalQuestions > 0 ? (double) correctCount / totalQuestions * 100 : 0;
+        
+        // 统计标题
+        TextView statsTitle = new TextView(getContext());
+        statsTitle.setText("📊 答题统计");
+        statsTitle.setTextSize(18);
+        statsTitle.setTextColor(getContext().getResources().getColor(R.color.text_primary));
+        statsTitle.setPadding(0, 0, 0, 16);
+        parent.addView(statsTitle);
+        
+        // 统计内容
+        TextView statsContent = new TextView(getContext());
+        String statsText = String.format(
+            "总题数：%d题\n正确：%d题 (%.1f%%)\n错误：%d题 (%.1f%%)\n得分：%d分",
+            totalQuestions,
+            correctCount, (double) correctCount / totalQuestions * 100,
+            wrongCount, (double) wrongCount / totalQuestions * 100,
+            calculateScore(correctCount, totalQuestions)
+        );
+        statsContent.setText(statsText);
+        statsContent.setTextSize(14);
+        statsContent.setTextColor(getContext().getResources().getColor(R.color.text_secondary));
+        statsContent.setPadding(0, 0, 0, 24);
+        parent.addView(statsContent);
+    }
+    
+    /**
+     * 添加单个题目的解析
+     */
+    private void addQuestionAnalysis(LinearLayout parent, Question question, int questionNumber, Boolean isCorrect, Integer userAnswerIndex) {
+        // 题目编号和基本信息
+        TextView questionHeader = new TextView(getContext());
+        String headerText = String.format("第%d题 %s [%s]", 
+            questionNumber,
+            isCorrect ? "✅ 正确" : "❌ 错误",
+            getQuestionTypeDescription(question.getType())
+        );
+        questionHeader.setText(headerText);
+        questionHeader.setTextSize(16);
+        questionHeader.setTextColor(isCorrect ? 
+            getContext().getResources().getColor(R.color.success_green) : 
+            getContext().getResources().getColor(R.color.error_red));
+        questionHeader.setPadding(0, 0, 0, 8);
+        parent.addView(questionHeader);
+        
+        // 题目内容
+        TextView questionContent = new TextView(getContext());
+        questionContent.setText(question.getTitle());
+        questionContent.setTextSize(14);
+        questionContent.setTextColor(getContext().getResources().getColor(R.color.text_primary));
+        questionContent.setPadding(0, 0, 0, 8);
+        parent.addView(questionContent);
+        
+        // 选项列表
+        List<String> options = question.getOptions();
+        if (options != null) {
+            char optionChar = 'A';
+            for (int i = 0; i < options.size(); i++) {
+                TextView optionView = new TextView(getContext());
+                String optionText = String.valueOf(optionChar) + ". " + options.get(i);
+                
+                // 标记正确答案和用户答案
+                if (question.getCorrectAnswer() != null && question.getCorrectAnswer() == i) {
+                    optionText += " ✓ (正确答案)";
+                    optionView.setTextColor(getContext().getResources().getColor(R.color.success_green));
+                } else if (userAnswerIndex != null && userAnswerIndex == i) {
+                    optionText += " ✗ (您的答案)";
+                    optionView.setTextColor(getContext().getResources().getColor(R.color.error_red));
+                } else {
+                    optionView.setTextColor(getContext().getResources().getColor(R.color.text_primary));
+                }
+                
+                optionView.setText(optionText);
+                optionView.setTextSize(13);
+                optionView.setPadding(16, 4, 0, 4);
+                parent.addView(optionView);
+                
+                optionChar++;
+            }
+        }
+        
+        // 解析内容
+        String analysis = generateAIAnalysis(question, userAnswerIndex);
+        if (analysis != null && !analysis.trim().isEmpty()) {
+            TextView analysisLabel = new TextView(getContext());
+            analysisLabel.setText("📝 详细解析：");
+            analysisLabel.setTextSize(14);
+            analysisLabel.setTextColor(getContext().getResources().getColor(R.color.text_primary));
+            analysisLabel.setPadding(0, 12, 0, 4);
+            parent.addView(analysisLabel);
+            
+            TextView analysisContent = new TextView(getContext());
+            analysisContent.setText(analysis);
+            analysisContent.setTextSize(13);
+            analysisContent.setTextColor(getContext().getResources().getColor(R.color.text_secondary));
+            analysisContent.setPadding(16, 0, 0, 0);
+            parent.addView(analysisContent);
+        }
+    }
+    
+    /**
+     * 计算得分
+     */
+    private int calculateScore(int correctCount, int totalQuestions) {
+        if (totalQuestions == 0) return 0;
+        // 每题10分，满分100分
+        return (correctCount * 100) / totalQuestions;
     }
 }

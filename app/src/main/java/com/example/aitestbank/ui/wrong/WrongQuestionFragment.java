@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.aitestbank.R;
 import com.example.aitestbank.supabase.SimpleSupabaseClient;
 import com.example.aitestbank.ui.adapter.WrongQuestionAdapter;
+import com.example.aitestbank.utils.OperationCallback;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -43,6 +44,8 @@ public class WrongQuestionFragment extends Fragment {
     private AutoCompleteTextView filterSpinner;
     private TextView clearMastered;
     private View emptyState;
+    private TextView reminderStatus;
+    private com.google.android.material.button.MaterialButton setReminderButton;
     
     // 数据和客户端
     private SimpleSupabaseClient supabaseClient;
@@ -99,12 +102,12 @@ public class WrongQuestionFragment extends Fragment {
             
             @Override
             public void onDeleteWrongQuestion(WrongQuestionAdapter.WrongQuestionItem wrongQuestion) {
-                deleteWrongQuestion(wrongQuestion);
+                showDeleteConfirmationDialog(wrongQuestion);
             }
             
             @Override
             public void onMarkMastered(WrongQuestionAdapter.WrongQuestionItem wrongQuestion) {
-                markAsMastered(wrongQuestion);
+                toggleMasteryStatus(wrongQuestion);
             }
         });
     }
@@ -123,8 +126,60 @@ public class WrongQuestionFragment extends Fragment {
     private void setupClickListeners() {
         // 清除已掌握按钮
         clearMastered.setOnClickListener(v -> {
-            clearMasteredItems();
+            showClearMasteredConfirmationDialog();
         });
+        
+        // 刷新按钮
+        View fabReviewAll = getView().findViewById(R.id.fab_review_all);
+        if (fabReviewAll != null) {
+            fabReviewAll.setOnClickListener(v -> {
+                refreshData();
+            });
+        }
+        
+        // 空状态中的开始刷题按钮
+        View btnStartPractice = getView().findViewById(R.id.btn_start_practice);
+        if (btnStartPractice != null) {
+            btnStartPractice.setOnClickListener(v -> {
+                // 跳转到刷题界面
+                Toast.makeText(getContext(), "跳转到刷题界面", Toast.LENGTH_SHORT).show();
+            });
+        }
+    }
+    
+    private void showClearMasteredConfirmationDialog() {
+        int masteredCount = getMasteredCount();
+        if (masteredCount == 0) {
+            Toast.makeText(getContext(), "没有已掌握的错题", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        new android.app.AlertDialog.Builder(requireContext())
+            .setTitle("清除已掌握错题")
+            .setMessage("确定要清除所有已掌握的错题吗？共" + masteredCount + "道错题。")
+            .setPositiveButton("清除", (dialog, which) -> {
+                clearMasteredItems();
+            })
+            .setNegativeButton("取消", null)
+            .show();
+    }
+    
+    private int getMasteredCount() {
+        int count = 0;
+        for (WrongQuestionAdapter.WrongQuestionItem item : wrongQuestions) {
+            if (item.isMastered()) {
+                count++;
+            }
+        }
+        return count;
+    }
+    
+    private void refreshData() {
+        if (isAdded() && getContext() != null) {
+            Toast.makeText(getContext(), "正在刷新数据...", Toast.LENGTH_SHORT).show();
+        }
+        loadWrongQuestions();
+        loadStatistics();
     }
     
     private void loadWrongQuestions() {
@@ -138,8 +193,14 @@ public class WrongQuestionFragment extends Fragment {
     private void loadWrongQuestionsFromSupabase() {
         new Thread(() -> {
             try {
-                // 查询wrong_questions表获取错题数据
-                String result = supabaseClient.query("wrong_questions", "*", "limit=10");
+                // 获取当前用户ID
+                com.example.aitestbank.supabase.auth.AuthManager authManager = 
+                    com.example.aitestbank.supabase.auth.AuthManager.getInstance(requireContext());
+                String userId = authManager.getCurrentUserId();
+                
+                // 查询当前用户的错题数据，按创建时间倒序排列
+                String result = supabaseClient.query("wrong_questions", "*", 
+                    "user_id=eq." + userId + "&order=created_at.desc&limit=50");
                 Log.d(TAG, "Wrong questions from Supabase: " + result);
                 
                 List<WrongQuestionAdapter.WrongQuestionItem> loadedWrongQuestions = parseWrongQuestionsFromSupabase(result);
@@ -155,7 +216,12 @@ public class WrongQuestionFragment extends Fragment {
                         }
                     } else {
                         // 没有错题数据，显示空状态
-                        loadMockWrongQuestions();
+                        wrongQuestions.clear();
+                        wrongQuestionAdapter.setWrongQuestions(wrongQuestions);
+                        updateEmptyState();
+                        if (isAdded() && getContext() != null) {
+                            Toast.makeText(getContext(), "暂无错题记录", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
                 
@@ -163,9 +229,11 @@ public class WrongQuestionFragment extends Fragment {
                 Log.e(TAG, "Failed to load wrong questions from Supabase", e);
                 requireActivity().runOnUiThread(() -> {
                     if (isAdded() && getContext() != null) {
-                        Toast.makeText(getContext(), "网络错误，显示示例错题", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "网络错误，无法加载错题数据", Toast.LENGTH_SHORT).show();
                     }
-                    loadMockWrongQuestions();
+                    wrongQuestions.clear();
+                    wrongQuestionAdapter.setWrongQuestions(wrongQuestions);
+                    updateEmptyState();
                 });
             }
         }).start();
@@ -175,20 +243,37 @@ public class WrongQuestionFragment extends Fragment {
         try {
             List<WrongQuestionAdapter.WrongQuestionItem> wrongQuestionList = new ArrayList<>();
             
+            if (jsonResult == null || jsonResult.isEmpty() || jsonResult.equals("[]")) {
+                return wrongQuestionList;
+            }
+            
             JSONArray jsonArray = new JSONArray(jsonResult);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject obj = jsonArray.getJSONObject(i);
                 
-                String questionPreview = obj.getString("title");
+                // 使用正确的字段名
+                String questionPreview = obj.optString("question_title", "无标题");
                 if (questionPreview.length() > 50) {
                     questionPreview = questionPreview.substring(0, 50) + "...";
+                }
+                
+                // 获取时间信息
+                String timeStr = "未知时间";
+                if (obj.has("created_at")) {
+                    try {
+                        long timestamp = obj.getLong("created_at");
+                        timeStr = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date(timestamp));
+                    } catch (Exception e) {
+                        // 如果时间戳格式不对，尝试其他格式
+                        timeStr = obj.optString("created_at", "未知时间");
+                    }
                 }
                 
                 WrongQuestionAdapter.WrongQuestionItem wrongQuestion = new WrongQuestionAdapter.WrongQuestionItem(
                     obj.getString("id"),
                     questionPreview,
-                    obj.optInt("wrong_count", 1),
-                    "2023-12-17 14:30", // 模拟时间
+                    obj.optInt("review_count", 1), // 使用正确的字段名
+                    timeStr,
                     obj.optString("category", "未分类"),
                     obj.optBoolean("is_mastered", false)
                 );
@@ -200,45 +285,68 @@ public class WrongQuestionFragment extends Fragment {
             
         } catch (Exception e) {
             Log.e(TAG, "Failed to parse wrong questions JSON", e);
-            return null;
+            return new ArrayList<>();
         }
     }
     
-    private void loadMockWrongQuestions() {
-        // 模拟错题数据作为fallback
-        wrongQuestions.clear();
-        
-        WrongQuestionAdapter.WrongQuestionItem wq1 = new WrongQuestionAdapter.WrongQuestionItem(
-            "1", "下列哪个是Java的基本数据类型？String、Integer、int、ArrayList", 3,
-            "2023-12-17 14:30", "Java基础", false);
-            
-        WrongQuestionAdapter.WrongQuestionItem wq2 = new WrongQuestionAdapter.WrongQuestionItem(
-            "2", "Android中Activity的生命周期包括哪些方法？", 2,
-            "2023-12-16 10:15", "Android开发", false);
-            
-        WrongQuestionAdapter.WrongQuestionItem wq3 = new WrongQuestionAdapter.WrongQuestionItem(
-            "3", "数据结构中的二叉树有哪些遍历方式？", 1,
-            "2023-12-15 16:45", "数据结构", true); // 已掌握
-        
-        wrongQuestions.add(wq1);
-        wrongQuestions.add(wq2);
-        wrongQuestions.add(wq3);
-        
-        wrongQuestionAdapter.setWrongQuestions(wrongQuestions);
-        updateEmptyState();
-    }
+
     
     private void loadStatistics() {
-        // 加载统计数据（暂时使用静态数据，后续从Supabase获取）
-        if (wrongCountText != null) {
-            wrongCountText.setText("24");
-        }
-        if (masteredCount != null) {
-            masteredCount.setText("8");
-        }
-        if (reviewRate != null) {
-            reviewRate.setText("75%");
-        }
+        // 从Supabase加载统计数据
+        new Thread(() -> {
+            try {
+                // 获取当前用户ID
+                com.example.aitestbank.supabase.auth.AuthManager authManager = 
+                    com.example.aitestbank.supabase.auth.AuthManager.getInstance(requireContext());
+                String userId = authManager.getCurrentUserId();
+                
+                // 查询当前用户错题总数
+                String totalResult = supabaseClient.query("wrong_questions", "count", 
+                    "user_id=eq." + userId);
+                JSONArray totalArray = new JSONArray(totalResult);
+                int totalCount = totalArray.length() > 0 ? totalArray.getJSONObject(0).optInt("count", 0) : 0;
+                
+                // 查询当前用户已掌握的错题数
+                String masteredResult = supabaseClient.query("wrong_questions", "count", 
+                    "user_id=eq." + userId + "&is_mastered=eq.true");
+                JSONArray masteredArray = new JSONArray(masteredResult);
+                int masteredCountValue = masteredArray.length() > 0 ? masteredArray.getJSONObject(0).optInt("count", 0) : 0;
+                
+                // 计算复习率
+                int reviewRateValue = totalCount > 0 ? (masteredCountValue * 100 / totalCount) : 0;
+                
+                final int finalTotalCount = totalCount;
+                final int finalMasteredCount = masteredCountValue;
+                final int finalReviewRate = reviewRateValue;
+                
+                requireActivity().runOnUiThread(() -> {
+                    if (wrongCountText != null) {
+                        wrongCountText.setText(String.valueOf(finalTotalCount));
+                    }
+                    if (masteredCount != null) {
+                        masteredCount.setText(String.valueOf(finalMasteredCount));
+                    }
+                    if (reviewRate != null) {
+                        reviewRate.setText(finalReviewRate + "%");
+                    }
+                });
+                
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to load statistics from Supabase", e);
+                // 如果加载失败，显示空数据
+                requireActivity().runOnUiThread(() -> {
+                    if (wrongCountText != null) {
+                        wrongCountText.setText("0");
+                    }
+                    if (masteredCount != null) {
+                        masteredCount.setText("0");
+                    }
+                    if (reviewRate != null) {
+                        reviewRate.setText("0%");
+                    }
+                });
+            }
+        }).start();
     }
     
     private void updateEmptyState() {
@@ -316,18 +424,46 @@ public class WrongQuestionFragment extends Fragment {
         }).start();
     }
     
-    private void markAsMastered(WrongQuestionAdapter.WrongQuestionItem wrongQuestion) {
-        // 更新内存中的状态
-        wrongQuestion.setMastered(true);
+    private void toggleMasteryStatus(WrongQuestionAdapter.WrongQuestionItem wrongQuestion) {
+        // 切换掌握状态
+        boolean newStatus = !wrongQuestion.isMastered();
+        wrongQuestion.setMastered(newStatus);
         wrongQuestionAdapter.notifyDataSetChanged();
         
         // 更新Supabase中的记录
         updateWrongQuestionInSupabase(wrongQuestion);
         
         if (isAdded() && getContext() != null) {
-            Toast.makeText(getContext(), "标记为已掌握", Toast.LENGTH_SHORT).show();
+            String message = newStatus ? "标记为已掌握" : "标记为未掌握";
+            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
         }
         loadStatistics(); // 刷新统计数据
+    }
+    
+    private void showDeleteConfirmationDialog(WrongQuestionAdapter.WrongQuestionItem wrongQuestion) {
+        new android.app.AlertDialog.Builder(requireContext())
+            .setTitle("删除错题")
+            .setMessage("确定要删除这道错题吗？此操作不可撤销。")
+            .setPositiveButton("删除", (dialog, which) -> {
+                deleteWrongQuestion(wrongQuestion);
+            })
+            .setNegativeButton("取消", null)
+            .show();
+    }
+    
+    private void showMasteryToggleDialog(WrongQuestionAdapter.WrongQuestionItem wrongQuestion) {
+        String message = wrongQuestion.isMastered() ? 
+            "确定要将此错题标记为未掌握吗？" : 
+            "确定要将此错题标记为已掌握吗？";
+            
+        new android.app.AlertDialog.Builder(requireContext())
+            .setTitle("修改掌握状态")
+            .setMessage(message)
+            .setPositiveButton("确定", (dialog, which) -> {
+                toggleMasteryStatus(wrongQuestion);
+            })
+            .setNegativeButton("取消", null)
+            .show();
     }
     
     private void updateWrongQuestionInSupabase(WrongQuestionAdapter.WrongQuestionItem wrongQuestion) {
@@ -411,5 +547,46 @@ public class WrongQuestionFragment extends Fragment {
         super.onResume();
         // 每次回到错题本时刷新数据
         loadStatistics();
+        // 同步数据到云端
+        syncDataToCloud();
+    }
+    
+    @Override
+    public void onPause() {
+        super.onPause();
+        // 离开界面时确保数据同步
+        syncDataToCloud();
+    }
+    
+    private void syncDataToCloud() {
+        if (supabaseClient == null || wrongQuestions.isEmpty()) {
+            return;
+        }
+        
+        supabaseClient.syncWrongQuestionsToCloud(wrongQuestions, new OperationCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                Log.d(TAG, "数据同步成功: " + result);
+            }
+            
+            @Override
+            public void onError(Exception error) {
+                Log.e(TAG, "数据同步失败", error);
+            }
+        });
+    }
+    
+    /**
+     * 手动同步数据
+     */
+    private void manualSyncData() {
+        if (isAdded() && getContext() != null) {
+            Toast.makeText(getContext(), "正在同步数据...", Toast.LENGTH_SHORT).show();
+        }
+        
+        syncDataToCloud();
+        
+        // 同时从云端拉取最新数据
+        loadWrongQuestions();
     }
 }
