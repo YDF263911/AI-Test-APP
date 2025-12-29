@@ -24,6 +24,7 @@ import com.google.android.material.chip.Chip;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,8 +40,10 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Comparator;
 
 /**
@@ -61,10 +64,25 @@ public class WrongQuestionFragment extends Fragment {
     private TextView reminderStatus;
     private com.google.android.material.switchmaterial.SwitchMaterial reminderSwitch;
     
+    // 错题分析组件
+    private TextView weakKnowledgePoints;
+    private TextView categoryDistribution;
+    private TextView recommendedPractice;
+    private TextView analysisUpdateTime;
+    
     // 数据和客户端
     private SimpleSupabaseClient supabaseClient;
     private WrongQuestionAdapter wrongQuestionAdapter;
     private List<WrongQuestionAdapter.WrongQuestionItem> wrongQuestions = new ArrayList<>();
+    
+    // 错题分析数据
+    private Map<String, Integer> categoryWrongCounts = new HashMap<>();
+    private Map<String, Integer> knowledgePointErrors = new HashMap<>();
+    private Map<Integer, Integer> difficultyDistribution = new HashMap<>();
+    
+    // 科目筛选数据
+    private List<String> subjectList = new ArrayList<>();
+    private String selectedSubject = "";
     
     // 广播接收器
     private BroadcastReceiver wrongQuestionUpdateReceiver = new BroadcastReceiver() {
@@ -73,6 +91,7 @@ public class WrongQuestionFragment extends Fragment {
             if ("ACTION_WRONG_QUESTION_UPDATED".equals(intent.getAction())) {
                 loadWrongQuestions(); // 重新加载列表
                 loadStatistics();
+                loadWrongQuestionAnalysis(); // 重新加载分析数据
             }
         }
     };
@@ -105,6 +124,7 @@ public class WrongQuestionFragment extends Fragment {
         setupClickListeners();
         loadWrongQuestions();
         loadStatistics();
+        loadWrongQuestionAnalysis();
     }
     
 private void initViews(View view) {
@@ -116,6 +136,12 @@ private void initViews(View view) {
     clearMastered = view.findViewById(R.id.clear_mastered);
     emptyState = view.findViewById(R.id.empty_state);
     reminderSwitch = view.findViewById(R.id.reminder_switch);
+    
+    // 初始化错题分析组件
+    weakKnowledgePoints = view.findViewById(R.id.weak_knowledge_points);
+    categoryDistribution = view.findViewById(R.id.category_distribution);
+    recommendedPractice = view.findViewById(R.id.recommended_practice);
+    analysisUpdateTime = view.findViewById(R.id.analysis_update_time);
     
     // 初始化复习提醒开关状态
     loadReminderSettings();
@@ -322,9 +348,15 @@ private void initViews(View view) {
                     }
                 }
                 
-                // 获取分类并转换为中文显示名称
+                // 获取分类和科目信息
                 String category = obj.optString("category", "未分类");
+                String subject = obj.optString("subject", "未分类");
                 String displayCategory = getCategoryDisplayName(category);
+                String displaySubject = getSubjectDisplayName(subject);
+                
+                // 获取时间戳
+                long createdAt = obj.optLong("created_at", System.currentTimeMillis());
+                long updatedAt = obj.optLong("updated_at", System.currentTimeMillis());
                 
                 WrongQuestionAdapter.WrongQuestionItem wrongQuestion = new WrongQuestionAdapter.WrongQuestionItem(
                     obj.getString("id"),
@@ -332,7 +364,12 @@ private void initViews(View view) {
                     obj.optInt("review_count", 1), // 使用正确的字段名
                     timeStr,
                     displayCategory,
-                    obj.optBoolean("is_mastered", false)
+                    obj.optBoolean("is_mastered", false),
+                    obj.optInt("difficulty", 3),
+                    createdAt,
+                    updatedAt,
+                    displayCategory,
+                    displaySubject
                 );
                 
                 wrongQuestionList.add(wrongQuestion);
@@ -356,7 +393,13 @@ private void initViews(View view) {
             return "未分类";
         }
         
-        // 分类映射表
+        // 首先尝试从数据库的分类表中获取
+        String displayName = getCategoryFromDatabase(category);
+        if (displayName != null) {
+            return displayName;
+        }
+        
+        // 如果数据库中没有，使用硬编码的映射表作为后备
         Map<String, String> categoryMap = new HashMap<>();
         categoryMap.put("campus_recruitment", "校园招聘");
         categoryMap.put("Java基础", "Java基础");
@@ -372,8 +415,81 @@ private void initViews(View view) {
         categoryMap.put("数据库", "数据库");
         categoryMap.put("编程基础", "编程基础");
         categoryMap.put("网络", "网络");
+        categoryMap.put("civil_service", "公务员考试");
+        categoryMap.put("postgraduate", "考研");
         
         return categoryMap.getOrDefault(category, category);
+    }
+    
+    /**
+     * 从数据库查询分类名称
+     */
+    private String getCategoryFromDatabase(String categoryId) {
+        try {
+            // 异步查询数据库分类表
+            String result = supabaseClient.query("question_categories", "name", "id=eq." + categoryId);
+            if (result != null && !result.isEmpty() && !result.equals("[]")) {
+                org.json.JSONArray jsonArray = new org.json.JSONArray(result);
+                if (jsonArray.length() > 0) {
+                    org.json.JSONObject obj = jsonArray.getJSONObject(0);
+                    return obj.optString("name", categoryId);
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to query category from database: " + categoryId, e);
+        }
+        return null;
+    }
+    
+    /**
+     * 获取科目的中文显示名称
+     */
+    private String getSubjectDisplayName(String subject) {
+        if (subject == null || subject.isEmpty()) {
+            return "未分类";
+        }
+        
+        // 首先尝试从数据库的科目表中获取
+        String displayName = getSubjectFromDatabase(subject);
+        if (displayName != null) {
+            return displayName;
+        }
+        
+        // 如果数据库中没有，使用硬编码的映射表作为后备
+        Map<String, String> subjectMap = new HashMap<>();
+        subjectMap.put("programming", "编程语言");
+        subjectMap.put("algorithm", "算法与数据结构");
+        subjectMap.put("database", "数据库");
+        subjectMap.put("network", "计算机网络");
+        subjectMap.put("operating_system", "操作系统");
+        subjectMap.put("verbal_reasoning", "言语理解");
+        subjectMap.put("quantitative_reasoning", "数量关系");
+        subjectMap.put("logical_reasoning", "判断推理");
+        subjectMap.put("mathematics", "数学");
+        subjectMap.put("english", "英语");
+        subjectMap.put("politics", "政治");
+        
+        return subjectMap.getOrDefault(subject, subject);
+    }
+    
+    /**
+     * 从数据库查询科目名称
+     */
+    private String getSubjectFromDatabase(String subjectId) {
+        try {
+            // 异步查询数据库科目表
+            String result = supabaseClient.query("subjects", "name", "id=eq." + subjectId);
+            if (result != null && !result.isEmpty() && !result.equals("[]")) {
+                org.json.JSONArray jsonArray = new org.json.JSONArray(result);
+                if (jsonArray.length() > 0) {
+                    org.json.JSONObject obj = jsonArray.getJSONObject(0);
+                    return obj.optString("name", subjectId);
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to query subject from database: " + subjectId, e);
+        }
+        return null;
     }
     
     private void loadStatistics() {
@@ -466,16 +582,135 @@ private void initViews(View view) {
                 }
                 break;
             case 3: // 最近一周
-            case 4: // 最近一月
-                // 这里简化处理，实际应该根据时间筛选
-                filteredList.addAll(wrongQuestions);
+                filteredList.addAll(getRecentWrongQuestions(7));
                 break;
+            case 4: // 最近一月
+                filteredList.addAll(getRecentWrongQuestions(30));
+                break;
+            case 5: // 按科目筛选
+                showSubjectSelectionDialog();
+                return; // 不立即筛选，等待用户选择
         }
         
         wrongQuestionAdapter.setWrongQuestions(filteredList);
         if (isAdded() && getContext() != null) {
             Toast.makeText(getContext(), "筛选出 " + filteredList.size() + " 道错题", Toast.LENGTH_SHORT).show();
         }
+    }
+    
+    /**
+     * 获取最近N天的错题
+     */
+    private List<WrongQuestionAdapter.WrongQuestionItem> getRecentWrongQuestions(int days) {
+        List<WrongQuestionAdapter.WrongQuestionItem> recentList = new ArrayList<>();
+        long currentTime = System.currentTimeMillis();
+        long timeThreshold = currentTime - (days * 24L * 60 * 60 * 1000);
+        
+        for (WrongQuestionAdapter.WrongQuestionItem item : wrongQuestions) {
+            // 使用新的时间字段进行筛选
+            if (item.getCreatedAt() >= timeThreshold) {
+                recentList.add(item);
+            }
+        }
+        
+        return recentList;
+    }
+    
+    /**
+     * 显示科目选择对话框
+     */
+    private void showSubjectSelectionDialog() {
+        if (subjectList.isEmpty()) {
+            loadSubjectList();
+        }
+        
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("选择科目");
+        
+        // 添加"全部"选项
+        String[] subjectsWithAll = new String[subjectList.size() + 1];
+        subjectsWithAll[0] = "全部科目";
+        for (int i = 0; i < subjectList.size(); i++) {
+            subjectsWithAll[i + 1] = subjectList.get(i);
+        }
+        
+        builder.setItems(subjectsWithAll, (dialog, which) -> {
+            if (which == 0) {
+                // 选择"全部科目"
+                selectedSubject = "";
+                filterBySubject("");
+            } else {
+                // 选择具体科目
+                selectedSubject = subjectsWithAll[which];
+                filterBySubject(selectedSubject);
+            }
+        });
+        
+        builder.setNegativeButton("取消", null);
+        builder.show();
+    }
+    
+    /**
+     * 按科目筛选错题
+     */
+    private void filterBySubject(String subject) {
+        List<WrongQuestionAdapter.WrongQuestionItem> filteredList = new ArrayList<>();
+        
+        if (subject.isEmpty()) {
+            // 显示全部错题
+            filteredList.addAll(wrongQuestions);
+        } else {
+            // 按科目筛选
+            for (WrongQuestionAdapter.WrongQuestionItem item : wrongQuestions) {
+                if (subject.equals(item.getSubject())) {
+                    filteredList.add(item);
+                }
+            }
+        }
+        
+        wrongQuestionAdapter.setWrongQuestions(filteredList);
+        if (isAdded() && getContext() != null) {
+            String message = subject.isEmpty() ? "显示全部错题" : "筛选科目: " + subject;
+            Toast.makeText(getContext(), message + " (" + filteredList.size() + "道错题)", Toast.LENGTH_SHORT).show();
+        }
+    }
+    
+    /**
+     * 加载科目列表
+     */
+    private void loadSubjectList() {
+        // 从数据库获取科目列表
+        new Thread(() -> {
+            try {
+                // 这里应该从Supabase获取科目数据，暂时使用硬编码
+                subjectList.clear();
+                subjectList.add("编程语言");
+                subjectList.add("算法与数据结构");
+                subjectList.add("数据库");
+                subjectList.add("计算机网络");
+                subjectList.add("操作系统");
+                subjectList.add("言语理解");
+                subjectList.add("数量关系");
+                subjectList.add("判断推理");
+                subjectList.add("数学");
+                subjectList.add("英语");
+                subjectList.add("政治");
+                
+                // 根据实际数据库中的错题科目进行去重
+                Set<String> existingSubjects = new HashSet<>();
+                for (WrongQuestionAdapter.WrongQuestionItem item : wrongQuestions) {
+                    if (item.getSubject() != null && !item.getSubject().isEmpty()) {
+                        existingSubjects.add(item.getSubject());
+                    }
+                }
+                
+                // 只保留实际存在的科目
+                subjectList.retainAll(existingSubjects);
+                
+            } catch (Exception e) {
+                Log.e(TAG, "加载科目列表失败", e);
+            }
+        }).start();
     }
     
     private void deleteWrongQuestion(WrongQuestionAdapter.WrongQuestionItem wrongQuestion) {
@@ -777,6 +1012,170 @@ private void initViews(View view) {
         
         SharedPreferences prefs = getContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         return prefs.getLong(KEY_LAST_SYNC_TIME, 0);
+    }
+    
+    /**
+     * 加载错题分析数据
+     */
+    private void loadWrongQuestionAnalysis() {
+        new Thread(() -> {
+            try {
+                // 获取当前用户ID
+                com.example.aitestbank.supabase.auth.AuthManager authManager = 
+                    com.example.aitestbank.supabase.auth.AuthManager.getInstance(requireContext());
+                String userId = authManager.getCurrentUserId();
+                
+                // 查询当前用户的所有错题数据
+                String result = supabaseClient.query("wrong_questions", "*", 
+                    "user_id=eq." + userId + "&is_mastered=eq.false&order=created_at.desc");
+                
+                List<WrongQuestionAdapter.WrongQuestionItem> wrongQuestions = parseWrongQuestionsFromSupabase(result);
+                
+                // 分析错题数据
+                analyzeWrongQuestions(wrongQuestions);
+                
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to load wrong question analysis", e);
+                // 分析失败时显示默认信息
+                requireActivity().runOnUiThread(() -> {
+                    updateAnalysisUI("分析失败，请重试", "暂无数据", "暂无推荐");
+                });
+            }
+        }).start();
+    }
+    
+    /**
+     * 分析错题数据
+     */
+    private void analyzeWrongQuestions(List<WrongQuestionAdapter.WrongQuestionItem> wrongQuestions) {
+        if (wrongQuestions == null || wrongQuestions.isEmpty()) {
+            requireActivity().runOnUiThread(() -> {
+                updateAnalysisUI("暂无错题，无需分析", "所有分类都表现良好", "建议保持当前学习节奏");
+            });
+            return;
+        }
+        
+        // 分析分类分布
+        Map<String, Integer> categoryCounts = new HashMap<>();
+        for (WrongQuestionAdapter.WrongQuestionItem item : wrongQuestions) {
+            String category = item.getKnowledgePoint();
+            categoryCounts.put(category, categoryCounts.getOrDefault(category, 0) + 1);
+        }
+        
+        // 找出错题最多的分类（薄弱环节）
+        String weakestCategory = findWeakestCategory(categoryCounts);
+        String categoryDistributionText = buildCategoryDistributionText(categoryCounts);
+        String recommendationText = buildRecommendationText(categoryCounts, weakestCategory);
+        
+        // 更新UI
+        requireActivity().runOnUiThread(() -> {
+            updateAnalysisUI(weakestCategory, categoryDistributionText, recommendationText);
+        });
+    }
+    
+    /**
+     * 找出最薄弱的分类
+     */
+    private String findWeakestCategory(Map<String, Integer> categoryCounts) {
+        if (categoryCounts.isEmpty()) {
+            return "暂无薄弱知识点";
+        }
+        
+        String weakestCategory = null;
+        int maxCount = 0;
+        
+        for (Map.Entry<String, Integer> entry : categoryCounts.entrySet()) {
+            if (entry.getValue() > maxCount) {
+                maxCount = entry.getValue();
+                weakestCategory = entry.getKey();
+            }
+        }
+        
+        return weakestCategory != null ? "最薄弱：" + weakestCategory : "暂无明确薄弱环节";
+    }
+    
+    /**
+     * 构建分类分布文本
+     */
+    private String buildCategoryDistributionText(Map<String, Integer> categoryCounts) {
+        if (categoryCounts.isEmpty()) {
+            return "暂无错题数据";
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        int total = categoryCounts.values().stream().mapToInt(Integer::intValue).sum();
+        
+        // 按错题数量排序
+        List<Map.Entry<String, Integer>> sortedEntries = new ArrayList<>(categoryCounts.entrySet());
+        sortedEntries.sort((a, b) -> b.getValue().compareTo(a.getValue()));
+        
+        // 只显示前3个分类
+        int count = 0;
+        for (Map.Entry<String, Integer> entry : sortedEntries) {
+            if (count >= 3) break;
+            
+            int percentage = (int) Math.round((entry.getValue() * 100.0) / total);
+            sb.append("• ").append(entry.getKey()).append(": ").append(percentage).append("%\n");
+            count++;
+        }
+        
+        return sb.toString().trim();
+    }
+    
+    /**
+     * 构建推荐练习文本
+     */
+    private String buildRecommendationText(Map<String, Integer> categoryCounts, String weakestCategory) {
+        if (categoryCounts.isEmpty()) {
+            return "建议先完成一些练习，积累错题数据";
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        
+        // 根据错题分布给出针对性建议
+        if (categoryCounts.size() == 1) {
+            // 只有一个分类有错题
+            String category = categoryCounts.keySet().iterator().next();
+            sb.append("建议集中练习 ").append(category).append(" 相关题目");
+        } else {
+            // 多个分类有错题
+            sb.append("建议优先级：\n");
+            
+            // 按错题数量排序
+            List<Map.Entry<String, Integer>> sortedEntries = new ArrayList<>(categoryCounts.entrySet());
+            sortedEntries.sort((a, b) -> b.getValue().compareTo(a.getValue()));
+            
+            int count = 0;
+            for (Map.Entry<String, Integer> entry : sortedEntries) {
+                if (count >= 3) break;
+                sb.append(count + 1).append(". ").append(entry.getKey()).append("\n");
+                count++;
+            }
+        }
+        
+        return sb.toString().trim();
+    }
+    
+    /**
+     * 更新错题分析UI
+     */
+    private void updateAnalysisUI(String weakPoints, String distribution, String recommendation) {
+        if (weakKnowledgePoints != null) {
+            weakKnowledgePoints.setText(weakPoints);
+        }
+        
+        if (categoryDistribution != null) {
+            categoryDistribution.setText(distribution);
+        }
+        
+        if (recommendedPractice != null) {
+            recommendedPractice.setText(recommendation);
+        }
+        
+        if (analysisUpdateTime != null) {
+            String time = new java.text.SimpleDateFormat("HH:mm").format(new java.util.Date());
+            analysisUpdateTime.setText(time + " 更新");
+        }
     }
 
 }

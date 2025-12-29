@@ -60,7 +60,13 @@ public class WrongQuestionDetailActivity extends AppCompatActivity {
             return "未分类";
         }
         
-        // 分类映射表
+        // 首先尝试从数据库的分类表中获取
+        String displayName = getCategoryFromDatabase(category);
+        if (displayName != null) {
+            return displayName;
+        }
+        
+        // 如果数据库中没有，使用硬编码的映射表作为后备
         Map<String, String> categoryMap = new HashMap<>();
         categoryMap.put("campus_recruitment", "校园招聘");
         categoryMap.put("Java基础", "Java基础");
@@ -76,8 +82,30 @@ public class WrongQuestionDetailActivity extends AppCompatActivity {
         categoryMap.put("数据库", "数据库");
         categoryMap.put("编程基础", "编程基础");
         categoryMap.put("网络", "网络");
+        categoryMap.put("civil_service", "公务员考试");
+        categoryMap.put("postgraduate", "考研");
         
         return categoryMap.getOrDefault(category, category);
+    }
+    
+    /**
+     * 从数据库查询分类名称
+     */
+    private String getCategoryFromDatabase(String categoryId) {
+        try {
+            // 异步查询数据库分类表
+            String result = supabaseClient.query("question_categories", "name", "id=eq." + categoryId);
+            if (result != null && !result.isEmpty() && !result.equals("[]")) {
+                org.json.JSONArray jsonArray = new org.json.JSONArray(result);
+                if (jsonArray.length() > 0) {
+                    org.json.JSONObject obj = jsonArray.getJSONObject(0);
+                    return obj.optString("name", categoryId);
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to query category from database: " + categoryId, e);
+        }
+        return null;
     }
     
     @Override

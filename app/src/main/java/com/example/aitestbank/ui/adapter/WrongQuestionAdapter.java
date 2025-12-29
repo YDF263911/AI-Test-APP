@@ -151,6 +151,10 @@ public class WrongQuestionAdapter extends RecyclerView.Adapter<WrongQuestionAdap
         private String knowledgePoint;
         private boolean isMastered;
         private int difficulty;
+        private long createdAt; // 创建时间戳（毫秒）
+        private long updatedAt; // 更新时间戳（毫秒）
+        private String category; // 分类
+        private String subject; // 科目
         
         public WrongQuestionItem(String id, String questionPreview, int wrongCount, 
                                 String lastWrongDate, String knowledgePoint, boolean isMastered) {
@@ -161,6 +165,10 @@ public class WrongQuestionAdapter extends RecyclerView.Adapter<WrongQuestionAdap
             this.knowledgePoint = knowledgePoint;
             this.isMastered = isMastered;
             this.difficulty = 3; // 默认中等难度
+            this.createdAt = System.currentTimeMillis();
+            this.updatedAt = System.currentTimeMillis();
+            this.category = "未分类";
+            this.subject = "未分类";
         }
         
         public WrongQuestionItem(String id, String questionPreview, int wrongCount, 
@@ -172,6 +180,26 @@ public class WrongQuestionAdapter extends RecyclerView.Adapter<WrongQuestionAdap
             this.knowledgePoint = knowledgePoint;
             this.isMastered = isMastered;
             this.difficulty = difficulty;
+            this.createdAt = System.currentTimeMillis();
+            this.updatedAt = System.currentTimeMillis();
+            this.category = "未分类";
+            this.subject = "未分类";
+        }
+        
+        public WrongQuestionItem(String id, String questionPreview, int wrongCount, 
+                                String lastWrongDate, String knowledgePoint, boolean isMastered, 
+                                int difficulty, long createdAt, long updatedAt, String category, String subject) {
+            this.id = id;
+            this.questionPreview = questionPreview;
+            this.wrongCount = wrongCount;
+            this.lastWrongDate = lastWrongDate;
+            this.knowledgePoint = knowledgePoint;
+            this.isMastered = isMastered;
+            this.difficulty = difficulty;
+            this.createdAt = createdAt;
+            this.updatedAt = updatedAt;
+            this.category = category;
+            this.subject = subject;
         }
         
         // Getters and Setters
@@ -182,7 +210,15 @@ public class WrongQuestionAdapter extends RecyclerView.Adapter<WrongQuestionAdap
         public String getKnowledgePoint() { return knowledgePoint; }
         public boolean isMastered() { return isMastered; }
         public int getDifficulty() { return difficulty; }
+        public long getCreatedAt() { return createdAt; }
+        public long getUpdatedAt() { return updatedAt; }
+        public String getCategory() { return category; }
+        public String getSubject() { return subject; }
         public void setMastered(boolean mastered) { isMastered = mastered; }
         public void setDifficulty(int difficulty) { this.difficulty = difficulty; }
+        public void setCreatedAt(long createdAt) { this.createdAt = createdAt; }
+        public void setUpdatedAt(long updatedAt) { this.updatedAt = updatedAt; }
+        public void setCategory(String category) { this.category = category; }
+        public void setSubject(String subject) { this.subject = subject; }
     }
 }
