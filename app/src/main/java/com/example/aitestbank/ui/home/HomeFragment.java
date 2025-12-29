@@ -170,6 +170,37 @@ public class HomeFragment extends Fragment {
         }).start();
     }
     
+    /**
+     * 获取分类的中文显示名称
+     */
+    private String getCategoryDisplayName(String category) {
+        if (category == null || category.isEmpty()) {
+            return "未分类";
+        }
+        
+        // 分类映射表 - 与错题详情页面保持一致
+        java.util.Map<String, String> categoryMap = new java.util.HashMap<>();
+        categoryMap.put("campus_recruitment", "校园招聘");
+        categoryMap.put("Java基础", "Java基础");
+        categoryMap.put("Python", "Python");
+        categoryMap.put("操作系统", "操作系统");
+        categoryMap.put("数据库/SQL", "数据库/SQL");
+        categoryMap.put("数据结构与算法", "数据结构与算法");
+        categoryMap.put("计算机网络", "计算机网络");
+        categoryMap.put("Android开发", "Android开发");
+        categoryMap.put("Java框架", "Java框架");
+        categoryMap.put("前端框架", "前端框架");
+        categoryMap.put("工具", "开发工具");
+        categoryMap.put("数据库", "数据库");
+        categoryMap.put("编程基础", "编程基础");
+        categoryMap.put("网络", "网络");
+        categoryMap.put("行测数量关系", "行测数量关系"); // 添加模拟数据中的分类
+        categoryMap.put("数据结构", "数据结构"); // 添加模拟数据中的分类
+        categoryMap.put("算法设计", "算法设计"); // 添加模拟数据中的分类
+        
+        return categoryMap.getOrDefault(category, category);
+    }
+    
     private List<CategoryAdapter.Category> parseCategoriesFromSupabase(String jsonResult) {
         try {
             List<CategoryAdapter.Category> categories = new ArrayList<>();
@@ -184,12 +215,13 @@ public class HomeFragment extends Fragment {
                 categoryCountMap.put(category, categoryCountMap.getOrDefault(category, 0) + 1);
             }
             
-            // 转换为Category列表
+            // 转换为Category列表，使用中文显示名称
             int index = 1;
             for (java.util.Map.Entry<String, Integer> entry : categoryCountMap.entrySet()) {
+                String displayName = getCategoryDisplayName(entry.getKey());
                 categories.add(new CategoryAdapter.Category(
                     String.valueOf(index++),
-                    entry.getKey(),
+                    displayName,  // 使用转换后的中文名称
                     entry.getValue()
                 ));
             }
@@ -203,12 +235,12 @@ public class HomeFragment extends Fragment {
     }
     
     private void loadMockCategories() {
-        // 模拟数据作为fallback
+        // 模拟数据作为fallback - 使用中文名称
         List<CategoryAdapter.Category> mockCategories = new ArrayList<>();
         mockCategories.add(new CategoryAdapter.Category("1", "Java基础", 150));
         mockCategories.add(new CategoryAdapter.Category("2", "行测数量关系", 200));
         mockCategories.add(new CategoryAdapter.Category("3", "Android开发", 120));
-        mockCategories.add(new CategoryAdapter.Category("4", "数据结构", 180));
+        mockCategories.add(new CategoryAdapter.Category("4", "数据结构与算法", 180));
         mockCategories.add(new CategoryAdapter.Category("5", "算法设计", 100));
         mockCategories.add(new CategoryAdapter.Category("6", "计算机网络", 90));
         

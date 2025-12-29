@@ -1,15 +1,26 @@
 package com.example.aitestbank.ui.wrong;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.PopupMenu;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.chip.Chip;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,7 +38,10 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Comparator;
 
 /**
  * 错题本Fragment
@@ -41,17 +55,39 @@ public class WrongQuestionFragment extends Fragment {
     private TextView wrongCountText;
     private TextView masteredCount;
     private TextView reviewRate;
-    private AutoCompleteTextView filterSpinner;
-    private TextView clearMastered;
+    private Spinner filterSpinner;
+    private Button clearMastered;
     private View emptyState;
     private TextView reminderStatus;
-    private com.google.android.material.button.MaterialButton setReminderButton;
+    private com.google.android.material.switchmaterial.SwitchMaterial reminderSwitch;
     
     // 数据和客户端
     private SimpleSupabaseClient supabaseClient;
     private WrongQuestionAdapter wrongQuestionAdapter;
     private List<WrongQuestionAdapter.WrongQuestionItem> wrongQuestions = new ArrayList<>();
     
+    // 广播接收器
+    private BroadcastReceiver wrongQuestionUpdateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if ("ACTION_WRONG_QUESTION_UPDATED".equals(intent.getAction())) {
+                loadWrongQuestions(); // 重新加载列表
+                loadStatistics();
+            }
+        }
+    };
+
+    // 排序类型常量
+    private static final int SORT_BY_TIME_DESC = 0; // 按时间倒序
+    private static final int SORT_BY_TIME_ASC = 1;  // 按时间正序
+    private static final int SORT_BY_SUBJECT = 2;   // 按科目
+    private static final int SORT_BY_MASTERY = 3;  // 按掌握状态（未掌握在前）
+    
+    // SharedPreferences 键名
+    private static final String PREFS_NAME = "WrongQuestionPrefs";
+    private static final String KEY_REMINDER_ENABLED = "reminder_enabled";
+    private static final String KEY_LAST_SYNC_TIME = "last_sync_time";
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -71,15 +107,28 @@ public class WrongQuestionFragment extends Fragment {
         loadStatistics();
     }
     
-    private void initViews(View view) {
-        wrongQuestionRecyclerView = view.findViewById(R.id.wrong_question_recycler_view);
-        wrongCountText = view.findViewById(R.id.wrong_count_text);
-        masteredCount = view.findViewById(R.id.mastered_count);
-        reviewRate = view.findViewById(R.id.review_rate);
-        filterSpinner = view.findViewById(R.id.filter_spinner);
-        clearMastered = view.findViewById(R.id.clear_mastered);
-        emptyState = view.findViewById(R.id.empty_state);
-    }
+private void initViews(View view) {
+    wrongQuestionRecyclerView = view.findViewById(R.id.wrong_question_recycler_view);
+    wrongCountText = view.findViewById(R.id.wrong_count_text);
+    masteredCount = view.findViewById(R.id.mastered_count);
+    reviewRate = view.findViewById(R.id.review_rate);
+    filterSpinner = view.findViewById(R.id.filter_spinner);
+    clearMastered = view.findViewById(R.id.clear_mastered);
+    emptyState = view.findViewById(R.id.empty_state);
+    reminderSwitch = view.findViewById(R.id.reminder_switch);
+    
+    // 初始化复习提醒开关状态
+    loadReminderSettings();
+    
+    // 设置复习提醒开关监听器
+    reminderSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        saveReminderSettings(isChecked);
+        showReminderStatusToast(isChecked);
+    });
+    
+    // 设置其他点击监听器
+    setupClickListeners();
+}
     
     private void setupSupabase() {
         supabaseClient = SimpleSupabaseClient.getInstance();
@@ -113,13 +162,17 @@ public class WrongQuestionFragment extends Fragment {
     }
     
     private void setupFilterSpinner() {
-        // 设置筛选条件
-        String[] filterOptions = {"全部错题", "未掌握", "已掌握", "最近一周", "最近一月"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, filterOptions);
-        filterSpinner.setAdapter(adapter);
+        // Spinner 的 entries 已在 XML 中通过 android:entries="@array/wrong_question_filter_options" 绑定
+        filterSpinner.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
+                filterWrongQuestions(position);
+            }
 
-        filterSpinner.setOnItemClickListener((parent, view, position, id) -> {
-            filterWrongQuestions(position);
+            @Override
+            public void onNothingSelected(android.widget.AdapterView<?> parent) {
+                // 什么都不选时保持原列表
+            }
         });
     }
     
@@ -128,7 +181,7 @@ public class WrongQuestionFragment extends Fragment {
         clearMastered.setOnClickListener(v -> {
             showClearMasteredConfirmationDialog();
         });
-        
+
         // 刷新按钮
         View fabReviewAll = getView().findViewById(R.id.fab_review_all);
         if (fabReviewAll != null) {
@@ -136,7 +189,7 @@ public class WrongQuestionFragment extends Fragment {
                 refreshData();
             });
         }
-        
+
         // 空状态中的开始刷题按钮
         View btnStartPractice = getView().findViewById(R.id.btn_start_practice);
         if (btnStartPractice != null) {
@@ -269,12 +322,16 @@ public class WrongQuestionFragment extends Fragment {
                     }
                 }
                 
+                // 获取分类并转换为中文显示名称
+                String category = obj.optString("category", "未分类");
+                String displayCategory = getCategoryDisplayName(category);
+                
                 WrongQuestionAdapter.WrongQuestionItem wrongQuestion = new WrongQuestionAdapter.WrongQuestionItem(
                     obj.getString("id"),
                     questionPreview,
                     obj.optInt("review_count", 1), // 使用正确的字段名
                     timeStr,
-                    obj.optString("category", "未分类"),
+                    displayCategory,
                     obj.optBoolean("is_mastered", false)
                 );
                 
@@ -290,6 +347,34 @@ public class WrongQuestionFragment extends Fragment {
     }
     
 
+    
+    /**
+     * 获取分类的中文显示名称
+     */
+    private String getCategoryDisplayName(String category) {
+        if (category == null || category.isEmpty()) {
+            return "未分类";
+        }
+        
+        // 分类映射表
+        Map<String, String> categoryMap = new HashMap<>();
+        categoryMap.put("campus_recruitment", "校园招聘");
+        categoryMap.put("Java基础", "Java基础");
+        categoryMap.put("Python", "Python");
+        categoryMap.put("操作系统", "操作系统");
+        categoryMap.put("数据库/SQL", "数据库/SQL");
+        categoryMap.put("数据结构与算法", "数据结构与算法");
+        categoryMap.put("计算机网络", "计算机网络");
+        categoryMap.put("Android开发", "Android开发");
+        categoryMap.put("Java框架", "Java框架");
+        categoryMap.put("前端框架", "前端框架");
+        categoryMap.put("工具", "开发工具");
+        categoryMap.put("数据库", "数据库");
+        categoryMap.put("编程基础", "编程基础");
+        categoryMap.put("网络", "网络");
+        
+        return categoryMap.getOrDefault(category, category);
+    }
     
     private void loadStatistics() {
         // 从Supabase加载统计数据
@@ -522,13 +607,48 @@ public class WrongQuestionFragment extends Fragment {
         }
         loadStatistics(); // 刷新统计数据
     }
+
+    private void sortWrongQuestions(int sortType) {
+        if (wrongQuestions == null || wrongQuestions.isEmpty()) {
+            return;
+        }
+
+        switch (sortType) {
+            case SORT_BY_TIME_DESC:
+                // 时间倒序：最新的在前
+                wrongQuestions.sort((o1, o2) -> o2.getLastWrongDate().compareTo(o1.getLastWrongDate()));
+                break;
+            case SORT_BY_TIME_ASC:
+                // 时间正序：最早的在前
+                wrongQuestions.sort(Comparator.comparing(WrongQuestionAdapter.WrongQuestionItem::getLastWrongDate));
+                break;
+            case SORT_BY_SUBJECT:
+                // 按学科字母顺序
+                wrongQuestions.sort(Comparator.comparing(WrongQuestionAdapter.WrongQuestionItem::getKnowledgePoint));
+                break;
+            case SORT_BY_MASTERY:
+                // 未掌握的在前
+                wrongQuestions.sort((o1, o2) -> Boolean.compare(o1.isMastered(), o2.isMastered()));
+                break;
+            default:
+                wrongQuestions.sort((o1, o2) -> o2.getLastWrongDate().compareTo(o1.getLastWrongDate()));
+                break;
+        }
+
+        wrongQuestionAdapter.setWrongQuestions(wrongQuestions);
+        if (isAdded() && getContext() != null) {
+            Toast.makeText(getContext(), "已排序", Toast.LENGTH_SHORT).show();
+        }
+    }
     
     private void deleteMasteredQuestionsFromSupabase(List<WrongQuestionAdapter.WrongQuestionItem> masteredQuestions) {
         new Thread(() -> {
             try {
                 // 批量删除已掌握的错题记录
+                // 注意：filter参数需要是完整的过滤条件，如 "id=eq.123"
                 for (WrongQuestionAdapter.WrongQuestionItem question : masteredQuestions) {
-                    String result = supabaseClient.delete("wrong_questions", question.getId());
+                    String filter = "id=eq." + question.getId();
+                    String result = supabaseClient.delete("wrong_questions", filter);
                     Log.d(TAG, "删除已掌握错题记录结果: " + result);
                 }
             } catch (Exception e) {
@@ -545,6 +665,15 @@ public class WrongQuestionFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        // 注册广播接收器
+        IntentFilter filter = new IntentFilter("ACTION_WRONG_QUESTION_UPDATED");
+        if (getContext() != null) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                getContext().registerReceiver(wrongQuestionUpdateReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+            } else {
+                getContext().registerReceiver(wrongQuestionUpdateReceiver, filter);
+            }
+        }
         // 每次回到错题本时刷新数据
         loadStatistics();
         // 同步数据到云端
@@ -554,6 +683,10 @@ public class WrongQuestionFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        // 注销广播接收器
+        if (getContext() != null) {
+            getContext().unregisterReceiver(wrongQuestionUpdateReceiver);
+        }
         // 离开界面时确保数据同步
         syncDataToCloud();
     }
@@ -576,6 +709,8 @@ public class WrongQuestionFragment extends Fragment {
         });
     }
     
+
+    
     /**
      * 手动同步数据
      */
@@ -589,4 +724,59 @@ public class WrongQuestionFragment extends Fragment {
         // 同时从云端拉取最新数据
         loadWrongQuestions();
     }
+    
+    /**
+     * 从SharedPreferences加载复习提醒设置
+     */
+    private void loadReminderSettings() {
+        if (getContext() == null) return;
+        
+        SharedPreferences prefs = getContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        boolean isEnabled = prefs.getBoolean(KEY_REMINDER_ENABLED, false); // 默认关闭
+        reminderSwitch.setChecked(isEnabled);
+    }
+    
+    /**
+     * 保存复习提醒设置到SharedPreferences
+     */
+    private void saveReminderSettings(boolean isEnabled) {
+        if (getContext() == null) return;
+        
+        SharedPreferences prefs = getContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(KEY_REMINDER_ENABLED, isEnabled);
+        editor.putLong(KEY_LAST_SYNC_TIME, System.currentTimeMillis());
+        editor.apply();
+    }
+    
+    /**
+     * 显示复习提醒状态变更的提示
+     */
+    private void showReminderStatusToast(boolean isEnabled) {
+        if (!isAdded() || getContext() == null) return;
+        
+        String message = isEnabled ? "已开启复习提醒" : "已关闭复习提醒";
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+    
+    /**
+     * 获取复习提醒是否开启
+     */
+    private boolean isReminderEnabled() {
+        if (getContext() == null) return false;
+        
+        SharedPreferences prefs = getContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return prefs.getBoolean(KEY_REMINDER_ENABLED, false);
+    }
+    
+    /**
+     * 获取上次同步时间
+     */
+    private long getLastSyncTime() {
+        if (getContext() == null) return 0;
+        
+        SharedPreferences prefs = getContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return prefs.getLong(KEY_LAST_SYNC_TIME, 0);
+    }
+
 }

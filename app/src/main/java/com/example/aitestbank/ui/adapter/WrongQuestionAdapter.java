@@ -92,7 +92,7 @@ public class WrongQuestionAdapter extends RecyclerView.Adapter<WrongQuestionAdap
                 itemView.setAlpha(0.7f);
             } else {
                 masteryStatusText.setText("未掌握");
-                masteryStatusText.setTextColor(itemView.getContext().getColor(R.color.text_secondary));
+                masteryStatusText.setTextColor(itemView.getContext().getColor(R.color.white));
                 itemView.setAlpha(1f);
             }
             

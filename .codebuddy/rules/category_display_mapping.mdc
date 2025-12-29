@@ -1,0 +1,39 @@
+---
+description: 
+alwaysApply: true
+enabled: true
+updatedAt: 2025-12-29T08:54:02.097Z
+provider: 
+---
+
+# 错题分类显示映射规则
+
+## 问题
+数据库中存储的分类标识（如 "campus_recruitment"）直接显示给用户，用户体验差。
+
+## 解决方案
+创建分类映射，将英文标识转换为中文显示名称。
+
+## 分类映射表
+| 数据库分类标识 | 中文显示名称 | 说明 |
+|---|---|---|
+| campus_recruitment | 校园招聘 | 校招相关题目 |
+| Java基础 | Java基础 | Java基础知识 |
+| Python | Python | Python语言 |
+| 操作系统 | 操作系统 | 操作系统相关 |
+| 数据库/SQL | 数据库/SQL | 数据库和SQL |
+| 数据结构与算法 | 数据结构与算法 | 数据结构和算法 |
+| 计算机网络 | 计算机网络 | 网络相关知识 |
+| Android开发 | Android开发 | Android开发 |
+| Java框架 | Java框架 | Spring等框架 |
+| 前端框架 | 前端框架 | React、Vue等 |
+| 工具 | 开发工具 | 开发工具使用 |
+| 数据库 | 数据库 | 数据库通用 |
+| 编程基础 | 编程基础 | 编程基础概念 |
+| 网络 | 网络 | 网络基础 |
+
+## 实现要求
+1. 在 `WrongQuestionFragment.parseWrongQuestionsFromSupabase()` 方法中添加分类映射逻辑
+2. 在 `WrongQuestionDetailActivity.displayQuestionDetail()` 方法中也需要添加映射
+3. 默认分类显示为 "未分类"
+4. 映射逻辑应该易于扩展和维护

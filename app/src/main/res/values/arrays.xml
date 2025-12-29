@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="wrong_question_filter_options">
+        <item>全部错题</item>
+        <item>最近一周</item>
+        <item>按科目筛选</item>
+        <item>未复习</item>
+    </string-array>
+</resources>
