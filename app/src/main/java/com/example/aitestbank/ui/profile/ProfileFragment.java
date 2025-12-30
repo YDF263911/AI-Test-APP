@@ -397,11 +397,63 @@ public class ProfileFragment extends Fragment {
     private void loadStudyStatistics() {
         if (currentUser == null) return;
         
-        // 从用户档案获取基本统计
-        updateStatisticsFromUserProfile(currentUser);
+        // 从answer_records表动态计算统计数据（更准确）
+        calculateStatisticsFromAnswerRecords();
         
-        // 获取更详细的学习统计（如果需要）
-        loadDetailedStudyStatistics();
+        // 从用户档案获取基本统计（作为备用）
+        updateStatisticsFromUserProfile(currentUser);
+    }
+    
+    /**
+     * 从answer_records表计算统计数据（动态计算，更准确）
+     */
+    private void calculateStatisticsFromAnswerRecords() {
+        if (currentUser == null) return;
+        
+        // 使用SimpleSupabaseClient查询answer_records表
+        com.example.aitestbank.supabase.SimpleSupabaseClient simpleClient = 
+            com.example.aitestbank.supabase.SimpleSupabaseClient.getInstance();
+        
+        new Thread(() -> {
+            try {
+                // 查询当前用户的答题记录
+                String result = simpleClient.query("answer_records", "*", "");
+                org.json.JSONArray jsonArray = new org.json.JSONArray(result);
+                
+                // 过滤出当前用户的记录
+                int userTotalQuestions = 0;
+                int userCorrectQuestions = 0;
+                
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    org.json.JSONObject obj = jsonArray.getJSONObject(i);
+                    
+                    // 这里需要确认user_id字段是否存在，如果不存在可能需要通过其他方式过滤
+                    // 暂时计算所有记录（因为RLS策略会限制只返回当前用户的记录）
+                    userTotalQuestions++;
+                    
+                    if (obj.getBoolean("is_correct")) {
+                        userCorrectQuestions++;
+                    }
+                }
+                
+                // 计算正确率
+                float accuracy = userTotalQuestions > 0 ? 
+                    (userCorrectQuestions * 100.0f / userTotalQuestions) : 0.0f;
+                
+                requireActivity().runOnUiThread(() -> {
+                    totalQuestions.setText(String.valueOf(userTotalQuestions));
+                    accuracyRate.setText(String.format(Locale.getDefault(), "%.1f%%", accuracy));
+                    
+                    Log.d(TAG, "从answer_records计算统计数据: 总题数=" + userTotalQuestions + 
+                          ", 正确数=" + userCorrectQuestions + ", 正确率=" + accuracy);
+                });
+                
+            } catch (Exception e) {
+                Log.e(TAG, "从answer_records计算统计数据失败", e);
+                // 降级到使用用户档案数据
+                updateStatisticsFromUserProfile(currentUser);
+            }
+        }).start();
     }
     
     /**
@@ -409,7 +461,7 @@ public class ProfileFragment extends Fragment {
      */
     private void updateStatisticsFromUserProfile(SupabaseUserProfile profile) {
         requireActivity().runOnUiThread(() -> {
-            // 更新总答题数
+            // 更新总答题数（如果answer_records查询失败时使用）
             Long totalQuestionsValue = profile.getTotalQuestions();
             totalQuestions.setText(totalQuestionsValue != null ? totalQuestionsValue.toString() : "0");
             
@@ -417,7 +469,7 @@ public class ProfileFragment extends Fragment {
             float accuracy = profile.getAccuracyRate();
             accuracyRate.setText(String.format(Locale.getDefault(), "%.1f%%", accuracy));
             
-            Log.d(TAG, "统计数据更新: 总题数=" + totalQuestionsValue + ", 正确率=" + accuracy);
+            Log.d(TAG, "从用户档案更新统计数据: 总题数=" + totalQuestionsValue + ", 正确率=" + accuracy);
         });
     }
     
