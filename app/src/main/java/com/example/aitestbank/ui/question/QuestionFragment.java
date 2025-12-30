@@ -865,26 +865,68 @@ public class QuestionFragment extends Fragment {
             child.setClickable(false);
         }
         
-        // 立即显示答案对错的Toast提示
+        // 计算是否正确
+        boolean isCorrect = false;
         if (userAnswerIndex != null && currentQuestion.getCorrectAnswer() != null) {
-            if (userAnswerIndex.equals(currentQuestion.getCorrectAnswer())) {
-                showAnswerResultToast(true);
-            } else {
-                showAnswerResultToast(false);
-            }
+            isCorrect = userAnswerIndex.equals(currentQuestion.getCorrectAnswer());
+            
+            // 立即显示答案对错的Toast提示
+            showAnswerResultToast(isCorrect);
         }
         
         // 更新按钮状态，显示查看解析按钮
         updateButtonStates();
         
+        // 保存答题记录到数据库
+        saveAnswerRecord(currentQuestion, userAnswerIndex, isCorrect);
+        
         // 如果答错了，自动保存错题记录
-        if (userAnswerIndex != null && currentQuestion.getCorrectAnswer() != null && 
-            !userAnswerIndex.equals(currentQuestion.getCorrectAnswer())) {
+        if (!isCorrect) {
             saveWrongQuestionAfterAnswer(currentQuestion, userAnswerIndex);
         }
         
         // 不立即显示详细解析，让用户选择是否查看
         // showQuestionAnalysis();
+    }
+    
+    /**
+     * 保存答题记录到数据库
+     */
+    private void saveAnswerRecord(Question question, Integer userAnswer, boolean isCorrect) {
+        if (question == null || supabaseClient == null) {
+            return;
+        }
+        
+        try {
+            // 计算答题时间（毫秒）
+            long answerTime = System.currentTimeMillis() - startTime;
+            
+            // 生成会话ID（一次练习同一个会话）
+            String sessionId = String.valueOf(startTime);
+            
+            // 调用保存方法
+            supabaseClient.saveAnswerRecord(
+                question.getId(),
+                userAnswer,
+                isCorrect,
+                (int) answerTime,
+                sessionId,
+                new OperationCallback<String>() {
+                    @Override
+                    public void onSuccess(String result) {
+                        Log.d(TAG, "答题记录保存成功: " + result);
+                    }
+                    
+                    @Override
+                    public void onError(Exception error) {
+                        Log.e(TAG, "答题记录保存失败", error);
+                    }
+                }
+            );
+            
+        } catch (Exception e) {
+            Log.e(TAG, "保存答题记录时出错", e);
+        }
     }
     
     /**
@@ -1275,16 +1317,45 @@ public class QuestionFragment extends Fragment {
         int correctCount = 0;
         int wrongCount = 0;
         
-        // 计算正确率
+        // 计算正确率并保存每道题的答题记录
         for (int i = 0; i < totalQuestions; i++) {
             if (i < userAnswers.size() && userAnswers.get(i) != -1) {
                 Question question = questions.get(i);
                 Integer userAnswer = userAnswers.get(i);
+                boolean isCorrect = false;
                 
                 if (question.getCorrectAnswer() != null && userAnswer.equals(question.getCorrectAnswer())) {
                     correctCount++;
+                    isCorrect = true;
                 } else {
                     wrongCount++;
+                }
+                
+                // 保存单题答题记录
+                try {
+                    long answerTime = endTime - startTime;
+                    String sessionId = String.valueOf(startTime);
+                    
+                    supabaseClient.saveAnswerRecord(
+                        question.getId(),
+                        userAnswer,
+                        isCorrect,
+                        (int) (answerTime / totalQuestions), // 平均答题时间
+                        sessionId,
+                        new OperationCallback<String>() {
+                            @Override
+                            public void onSuccess(String result) {
+                                Log.d(TAG, "答题记录保存成功");
+                            }
+                            
+                            @Override
+                            public void onError(Exception error) {
+                                Log.e(TAG, "答题记录保存失败", error);
+                            }
+                        }
+                    );
+                } catch (Exception e) {
+                    Log.e(TAG, "保存答题记录时出错", e);
                 }
             }
         }
@@ -1292,7 +1363,7 @@ public class QuestionFragment extends Fragment {
         // 计算正确率
         double accuracyRate = totalQuestions > 0 ? (double) correctCount / totalQuestions * 100 : 0;
         
-        // 保存到数据库（这里简化处理，实际应该调用Supabase API）
+        // 保存用户统计数据（包括学习天数）
         saveUserStatistics(totalQuestions, correctCount, accuracyRate);
         
         // 保存错题记录

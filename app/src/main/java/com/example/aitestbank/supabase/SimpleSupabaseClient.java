@@ -228,26 +228,89 @@ public class SimpleSupabaseClient {
     }
     
     /**
+     * 保存答题记录到answer_records表
+     */
+    public void saveAnswerRecord(String questionId, Integer userAnswer, boolean isCorrect, int answerTime, String sessionId, OperationCallback<String> callback) {
+        new Thread(() -> {
+            try {
+                // 构建答题记录数据
+                JsonObject answerRecord = new JsonObject();
+                answerRecord.addProperty("id", java.util.UUID.randomUUID().toString());
+                answerRecord.addProperty("question_id", questionId);
+                answerRecord.addProperty("user_answer", userAnswer);
+                answerRecord.addProperty("is_correct", isCorrect);
+                answerRecord.addProperty("answer_time", answerTime);
+                answerRecord.addProperty("session_id", sessionId);
+                
+                // 插入到answer_records表
+                String result = insert("answer_records", answerRecord);
+                Log.d(TAG, "答题记录保存成功: " + result);
+                
+                if (callback != null) {
+                    callback.onSuccess(result);
+                }
+                
+            } catch (Exception e) {
+                Log.e(TAG, "保存答题记录失败", e);
+                if (callback != null) {
+                    callback.onError(e);
+                }
+            }
+        }).start();
+    }
+
+    /**
      * 更新用户统计数据
      */
     public void updateUserStatistics(int totalQuestions, int correctCount, double accuracyRate, OperationCallback<String> callback) {
         new Thread(() -> {
             try {
-                // 构建统计数据对象
+                // 获取当前用户ID
+                com.example.aitestbank.supabase.auth.AuthManager authManager = 
+                    com.example.aitestbank.supabase.auth.AuthManager.getInstance(context);
+                String currentUserId = authManager.getCurrentUserId();
+                
+                // 更新user_profiles表的统计数据
                 JsonObject statsData = new JsonObject();
                 statsData.addProperty("total_questions", totalQuestions);
                 statsData.addProperty("correct_questions", correctCount);
-                statsData.addProperty("accuracy_rate", accuracyRate);
-                statsData.addProperty("last_updated", System.currentTimeMillis());
                 
-                // 这里应该更新user_profiles表或study_statistics表
-                // 目前先使用模拟数据，后续需要集成实际的数据库表
-                String result = "统计数据更新成功: 总题数=" + totalQuestions + 
-                               ", 正确数=" + correctCount + ", 正确率=" + accuracyRate + "%";
+                // 更新last_study_date为今天
+                String today = new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date());
+                statsData.addProperty("last_study_date", today);
                 
-                Log.d(TAG, result);
+                // 查询当前的study_days和last_study_date
+                try {
+                    String userProfileResult = query("user_profiles", "study_days,last_study_date", "id=eq." + currentUserId + "&limit=1");
+                    org.json.JSONArray jsonArray = new org.json.JSONArray(userProfileResult);
+                    
+                    if (jsonArray.length() > 0) {
+                        org.json.JSONObject userProfile = jsonArray.getJSONObject(0);
+                        String lastStudyDate = userProfile.optString("last_study_date", "");
+                        int currentStudyDays = userProfile.optInt("study_days", 0);
+                        
+                        // 如果上次学习日期不是今天，增加学习天数
+                        if (!today.equals(lastStudyDate)) {
+                            statsData.addProperty("study_days", currentStudyDays + 1);
+                            Log.d(TAG, "学习天数+1: " + (currentStudyDays + 1));
+                        } else {
+                            statsData.addProperty("study_days", currentStudyDays);
+                            Log.d(TAG, "今天已学习，学习天数不变: " + currentStudyDays);
+                        }
+                    } else {
+                        statsData.addProperty("study_days", 1);
+                        Log.d(TAG, "首次学习，学习天数设为1");
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "查询用户资料失败，设置默认学习天数为1", e);
+                    statsData.addProperty("study_days", 1);
+                }
                 
-                // 模拟异步回调
+                // 更新数据库
+                String result = update("user_profiles", statsData, "id=eq." + currentUserId);
+                Log.d(TAG, "用户统计数据更新成功: 总题数=" + totalQuestions + 
+                      ", 正确数=" + correctCount + ", 正确率=" + accuracyRate + "%");
+                
                 if (callback != null) {
                     callback.onSuccess(result);
                 }
