@@ -297,6 +297,21 @@ public class ProfileFragment extends Fragment {
         requireActivity().runOnUiThread(() -> {
             userName.setText(profile.getDisplayName() != null ? profile.getDisplayName() : "AI刷题用户");
             
+            // 设置用户头像
+            String avatarUrl = profile.getAvatarUrl();
+            if (avatarUrl != null && !avatarUrl.isEmpty()) {
+                // 使用Glide加载网络图片
+                com.bumptech.glide.Glide.with(requireContext())
+                    .load(avatarUrl)
+                    .placeholder(R.drawable.default_avatar)
+                    .error(R.drawable.default_avatar)
+                    .circleCrop()
+                    .into(userAvatar);
+            } else {
+                // 使用默认头像
+                userAvatar.setImageResource(R.drawable.default_avatar);
+            }
+            
             // 设置用户等级
             String userLevelText = getUserLevelDescription(profile.getTotalQuestions());
             userLevel.setText(userLevelText);
