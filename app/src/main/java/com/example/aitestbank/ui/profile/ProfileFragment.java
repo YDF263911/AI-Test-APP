@@ -421,31 +421,31 @@ public class ProfileFragment extends Fragment {
                 org.json.JSONArray jsonArray = new org.json.JSONArray(result);
                 
                 // 过滤出当前用户的记录
-                int userTotalQuestions = 0;
-                int userCorrectQuestions = 0;
+                final int[] userTotalQuestions = {0};
+                final int[] userCorrectQuestions = {0};
                 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     org.json.JSONObject obj = jsonArray.getJSONObject(i);
                     
                     // 这里需要确认user_id字段是否存在，如果不存在可能需要通过其他方式过滤
                     // 暂时计算所有记录（因为RLS策略会限制只返回当前用户的记录）
-                    userTotalQuestions++;
+                    userTotalQuestions[0]++;
                     
                     if (obj.getBoolean("is_correct")) {
-                        userCorrectQuestions++;
+                        userCorrectQuestions[0]++;
                     }
                 }
                 
                 // 计算正确率
-                float accuracy = userTotalQuestions > 0 ? 
-                    (userCorrectQuestions * 100.0f / userTotalQuestions) : 0.0f;
+                final float accuracy = userTotalQuestions[0] > 0 ? 
+                    (userCorrectQuestions[0] * 100.0f / userTotalQuestions[0]) : 0.0f;
                 
                 requireActivity().runOnUiThread(() -> {
-                    totalQuestions.setText(String.valueOf(userTotalQuestions));
+                    totalQuestions.setText(String.valueOf(userTotalQuestions[0]));
                     accuracyRate.setText(String.format(Locale.getDefault(), "%.1f%%", accuracy));
                     
-                    Log.d(TAG, "从answer_records计算统计数据: 总题数=" + userTotalQuestions + 
-                          ", 正确数=" + userCorrectQuestions + ", 正确率=" + accuracy);
+                    Log.d(TAG, "从answer_records计算统计数据: 总题数=" + userTotalQuestions[0] + 
+                          ", 正确数=" + userCorrectQuestions[0] + ", 正确率=" + accuracy);
                 });
                 
             } catch (Exception e) {
