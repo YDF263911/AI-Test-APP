@@ -81,7 +81,7 @@ public class ProfileFragment extends Fragment {
         setupSupabase();
         setupClickListeners();
         loadUserData();
-        loadStatistics();
+        // loadStatistics() 会在 loadUserData() 成功后自动调用
     }
     
     /**
@@ -248,10 +248,14 @@ public class ProfileFragment extends Fragment {
                     currentUser = parseUserProfileFromJson(userProfileJson);
                     updateUserInfo(currentUser);
                     Log.i(TAG, "用户档案加载成功: " + currentUser.getDisplayName());
+                    
+                    // 用户数据加载成功后，再加载统计数据
+                    loadStatistics();
                 } catch (Exception e) {
                     Log.e(TAG, "用户档案解析失败", e);
                     currentUser = createDefaultUserProfile(userId);
                     updateUserInfo(currentUser);
+                    loadStatistics();
                 }
             }
             
@@ -261,6 +265,7 @@ public class ProfileFragment extends Fragment {
                 // 使用默认用户信息
                 currentUser = createDefaultUserProfile(userId);
                 updateUserInfo(currentUser);
+                loadStatistics();
             }
         });
     }
