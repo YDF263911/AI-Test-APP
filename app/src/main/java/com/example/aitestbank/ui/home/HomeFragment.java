@@ -350,26 +350,34 @@ public class HomeFragment extends Fragment {
     
     private double getAccuracyRate() {
         try {
-            // 查询答题记录
-            String result = supabaseClient.query("answer_records", "is_correct", "");
+            // 获取当前用户ID
+            com.example.aitestbank.supabase.auth.AuthManager authManager =
+                com.example.aitestbank.supabase.auth.AuthManager.getInstance(getContext());
+            String userId = authManager.getCurrentUserId();
+
+            // 查询当前用户的答题记录
+            String filter = "user_id=eq." + userId;
+            String result = supabaseClient.query("answer_records", "is_correct", filter);
             JSONArray jsonArray = new JSONArray(result);
-            
+
             if (jsonArray.length() == 0) {
                 return 0.0;
             }
-            
+
             int totalAnswers = jsonArray.length();
             int correctAnswers = 0;
-            
+
             for (int i = 0; i < totalAnswers; i++) {
                 JSONObject obj = jsonArray.getJSONObject(i);
                 if (obj.getBoolean("is_correct")) {
                     correctAnswers++;
                 }
             }
-            
-            return totalAnswers > 0 ? (correctAnswers * 100.0 / totalAnswers) : 0.0;
-            
+
+            double accuracy = totalAnswers > 0 ? (correctAnswers * 100.0 / totalAnswers) : 0.0;
+            Log.d(TAG, "计算正确率 (userId=" + userId + "): " + totalAnswers + "/" + correctAnswers + " = " + accuracy + "%");
+            return accuracy;
+
         } catch (Exception e) {
             Log.e(TAG, "Failed to calculate accuracy rate", e);
         }
@@ -378,11 +386,19 @@ public class HomeFragment extends Fragment {
     
     private int getWrongQuestionsCount() {
         try {
-            // 查询错题本中未掌握的错题数量
-            String result = supabaseClient.query("wrong_questions", "count", "is_mastered=eq.false");
+            // 获取当前用户ID
+            com.example.aitestbank.supabase.auth.AuthManager authManager =
+                com.example.aitestbank.supabase.auth.AuthManager.getInstance(getContext());
+            String userId = authManager.getCurrentUserId();
+
+            // 查询当前用户错题本中未掌握的错题数量
+            String filter = "user_id=eq." + userId + "&is_mastered=eq.false";
+            String result = supabaseClient.query("wrong_questions", "count", filter);
             JSONArray jsonArray = new JSONArray(result);
             if (jsonArray.length() > 0) {
-                return jsonArray.getJSONObject(0).getInt("count");
+                int count = jsonArray.getJSONObject(0).getInt("count");
+                Log.d(TAG, "获取错题数量 (userId=" + userId + "): " + count);
+                return count;
             }
         } catch (Exception e) {
             Log.e(TAG, "Failed to get wrong questions count", e);
@@ -392,11 +408,19 @@ public class HomeFragment extends Fragment {
     
     private int getStudyDays() {
         try {
-            // 查询用户学习天数（从user_profiles表）
-            String result = supabaseClient.query("user_profiles", "study_days", "limit=1");
+            // 获取当前用户ID
+            com.example.aitestbank.supabase.auth.AuthManager authManager =
+                com.example.aitestbank.supabase.auth.AuthManager.getInstance(getContext());
+            String userId = authManager.getCurrentUserId();
+
+            // 查询当前用户的学习天数（从user_profiles表）
+            String filter = "id=eq." + userId;
+            String result = supabaseClient.query("user_profiles", "study_days", filter);
             JSONArray jsonArray = new JSONArray(result);
             if (jsonArray.length() > 0) {
-                return jsonArray.getJSONObject(0).optInt("study_days", 0);
+                int studyDays = jsonArray.getJSONObject(0).optInt("study_days", 0);
+                Log.d(TAG, "获取学习天数 (userId=" + userId + "): " + studyDays);
+                return studyDays;
             }
         } catch (Exception e) {
             Log.e(TAG, "Failed to get study days", e);

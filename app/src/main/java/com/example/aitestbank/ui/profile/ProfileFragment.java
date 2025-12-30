@@ -239,8 +239,8 @@ public class ProfileFragment extends Fragment {
             userName.setText(username != null ? username : "AI刷题用户");
         }
         
-        // 从Supabase user_profiles表获取用户数据
-        supabaseManager.getUserProfile(userId, new OperationCallback<String>() {
+        // 从Supabase user_profiles表获取用户数据 - 使用按ID查询的方法
+        supabaseManager.getUserProfileById(userId, new OperationCallback<String>() {
             @Override
             public void onSuccess(String userProfileJson) {
                 // 解析JSON为SupabaseUserProfile对象
@@ -430,14 +430,19 @@ public class ProfileFragment extends Fragment {
     private void calculateStatisticsFromAnswerRecords() {
         if (currentUser == null) return;
         
+        // 获取当前用户ID
+        AuthManager authManager = AuthManager.getInstance(requireContext());
+        String userId = authManager.getCurrentUserId();
+        
         // 使用SimpleSupabaseClient查询answer_records表
-        com.example.aitestbank.supabase.SimpleSupabaseClient simpleClient = 
+        com.example.aitestbank.supabase.SimpleSupabaseClient simpleClient =
             com.example.aitestbank.supabase.SimpleSupabaseClient.getInstance();
         
         new Thread(() -> {
             try {
-                // 查询当前用户的答题记录
-                String result = simpleClient.query("answer_records", "*", "");
+                // 查询当前用户的答题记录 - 使用filter参数
+                String filter = "user_id=eq." + userId;
+                String result = simpleClient.query("answer_records", "*", filter);
                 org.json.JSONArray jsonArray = new org.json.JSONArray(result);
                 
                 // 过滤出当前用户的记录
@@ -447,24 +452,26 @@ public class ProfileFragment extends Fragment {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     org.json.JSONObject obj = jsonArray.getJSONObject(i);
                     
-                    // 这里需要确认user_id字段是否存在，如果不存在可能需要通过其他方式过滤
-                    // 暂时计算所有记录（因为RLS策略会限制只返回当前用户的记录）
-                    userTotalQuestions[0]++;
-                    
-                    if (obj.getBoolean("is_correct")) {
-                        userCorrectQuestions[0]++;
+                    // 确保只统计当前用户的记录
+                    String recordUserId = obj.optString("user_id", "");
+                    if (recordUserId.equals(userId)) {
+                        userTotalQuestions[0]++;
+                        
+                        if (obj.getBoolean("is_correct")) {
+                            userCorrectQuestions[0]++;
+                        }
                     }
                 }
                 
                 // 计算正确率
-                final float accuracy = userTotalQuestions[0] > 0 ? 
+                final float accuracy = userTotalQuestions[0] > 0 ?
                     (userCorrectQuestions[0] * 100.0f / userTotalQuestions[0]) : 0.0f;
                 
                 requireActivity().runOnUiThread(() -> {
                     totalQuestions.setText(String.valueOf(userTotalQuestions[0]));
                     accuracyRate.setText(String.format(Locale.getDefault(), "%.1f%%", accuracy));
                     
-                    Log.d(TAG, "从answer_records计算统计数据: 总题数=" + userTotalQuestions[0] + 
+                    Log.d(TAG, "从answer_records计算统计数据 (userId=" + userId + "): 总题数=" + userTotalQuestions[0] +
                           ", 正确数=" + userCorrectQuestions[0] + ", 正确率=" + accuracy);
                 });
                 

@@ -53,6 +53,10 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.6")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.6")
     
+    // Glide图片加载
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+    
     // 其他依赖
     implementation("androidx.work:work-runtime:2.9.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")

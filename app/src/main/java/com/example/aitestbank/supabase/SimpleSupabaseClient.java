@@ -233,9 +233,15 @@ public class SimpleSupabaseClient {
     public void saveAnswerRecord(String questionId, Integer userAnswer, boolean isCorrect, int answerTime, String sessionId, OperationCallback<String> callback) {
         new Thread(() -> {
             try {
+                // 获取当前用户ID
+                com.example.aitestbank.supabase.auth.AuthManager authManager =
+                    com.example.aitestbank.supabase.auth.AuthManager.getInstance(context);
+                String userId = authManager.getCurrentUserId();
+                
                 // 构建答题记录数据
                 JsonObject answerRecord = new JsonObject();
                 answerRecord.addProperty("id", java.util.UUID.randomUUID().toString());
+                answerRecord.addProperty("user_id", userId); // 添加用户ID字段
                 answerRecord.addProperty("question_id", questionId);
                 answerRecord.addProperty("user_answer", userAnswer);
                 answerRecord.addProperty("is_correct", isCorrect);
@@ -244,7 +250,7 @@ public class SimpleSupabaseClient {
                 
                 // 插入到answer_records表
                 String result = insert("answer_records", answerRecord);
-                Log.d(TAG, "答题记录保存成功: " + result);
+                Log.d(TAG, "答题记录保存成功 (userId=" + userId + "): " + result);
                 
                 if (callback != null) {
                     callback.onSuccess(result);

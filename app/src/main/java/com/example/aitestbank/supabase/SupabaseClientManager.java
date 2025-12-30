@@ -214,6 +214,35 @@ public class SupabaseClientManager {
     }
     
     /**
+     * 按用户ID获取用户档案 - 用于登录用户
+     */
+    public void getUserProfileById(@NonNull String userId, @NonNull OperationCallback<String> callback) {
+        Log.d(TAG, "开始获取用户档案(按ID): " + userId);
+        
+        new Thread(() -> {
+            try {
+                String endpoint = SUPABASE_URL + "/rest/v1/user_profiles?id=eq." + userId;
+                
+                String result = performGetRequest(endpoint);
+                
+                mainHandler.post(() -> {
+                    if (result != null && !result.equals("[]")) {
+                        Log.i(TAG, "获取用户档案成功(按ID)");
+                        callback.onSuccess(result);
+                    } else {
+                        Log.w(TAG, "用户档案不存在(按ID): " + userId);
+                        callback.onError(new Exception("User profile not found"));
+                    }
+                });
+                
+            } catch (Exception e) {
+                Log.e(TAG, "获取用户档案失败(按ID)", e);
+                mainHandler.post(() -> callback.onError(e));
+            }
+        }).start();
+    }
+    
+    /**
      * 更新用户学习统计 - 对应user_profiles表中的统计字段
      */
     public void updateUserStudyStats(@NonNull String deviceId, long totalQuestions, long correctQuestions, int studyDays, @NonNull OperationCallback<Void> callback) {
